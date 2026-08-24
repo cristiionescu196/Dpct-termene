@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPCT - Gestiune Termene</title>
+    <title>DPCT - Gestiune Termene & Administrare</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,6 +11,68 @@
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <!-- Modal Panou Administrare -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-gear text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">Panou Administrare & Delegări</h3>
+                        <p class="text-xs text-slate-500">Gestionare roluri, structuri și desemnare înlocuitori temporari</p>
+                    </div>
+                </div>
+                <button type="button" onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Sectiune 1: Configurare Înlocuitori / Delegări -->
+            <div class="mb-8 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+                <h4 class="text-sm font-bold text-purple-900 mb-3 flex items-center">
+                    <i class="fa-solid fa-user-shield mr-2"></i> Setare Delegare Temporară (Înlocuitor Șef)
+                </h4>
+                <form onsubmit="handleSaveDelegation(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Titular Absent (Șef/Coordonator)</label>
+                        <select id="delAbsent" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none">
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Înlocuitor Desemnat</label>
+                        <select id="delSubstitute" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none">
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-lg text-xs shadow transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Salvează Delegarea
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sectiune 2: Tabel Utilizatori & Roluri -->
+            <div>
+                <h4 class="text-sm font-bold text-slate-800 mb-3">Organigramă Utilizatori & Drepturi</h4>
+                <div class="border rounded-xl overflow-hidden text-xs">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-100 text-slate-600 border-b">
+                            <tr>
+                                <th class="p-3">Utilizator</th>
+                                <th class="p-3">Birou / Unitate</th>
+                                <th class="p-3">Rol Curent</th>
+                                <th class="p-3">Zona / Sector</th>
+                                <th class="p-3 text-right">Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTable" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Notificare Termen Apropiat -->
     <div id="dueWarningModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -27,7 +89,7 @@
         </div>
     </div>
 
-    <!-- Modal Schimbare Parola Obligatorie -->
+    <!-- Modal Schimbare Parolă Obligatorie -->
     <div id="pwdModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div class="text-center mb-6">
@@ -101,7 +163,7 @@
         </div>
     </div>
 
-    <!-- Modal Adaugare Sarcina Noua -->
+    <!-- Modal Adăugare Sarcină Nouă -->
     <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
             <div class="flex justify-between items-center mb-4">
@@ -160,7 +222,7 @@
         </div>
     </div>
 
-    <!-- Modal Redeschidere Sarcină (Coordonator) -->
+    <!-- Modal Redeschidere Sarcină (Coordonator / Înlocuitor) -->
     <div id="reopenModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border-t-4 border-amber-500">
             <h3 class="text-lg font-bold text-slate-900 mb-2">Redeschidere Sarcină Finalizată</h3>
@@ -201,7 +263,7 @@
                     </div>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">DPCT - ANP</h1>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene & Lucrări</p>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene & Structură</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
@@ -237,10 +299,35 @@
                     <p id="userDisplay" class="text-xs text-slate-400"></p>
                 </div>
             </div>
-            <button type="button" onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                <i class="fa-solid fa-right-from-bracket mr-1"></i> Ieșire
-            </button>
+
+            <!-- Zona Dreapta: Butoane Admin, Înlocuitor & Ieșire -->
+            <div class="flex items-center space-x-3">
+                <div id="substituteBanner" class="hidden">
+                    <button type="button" onclick="toggleSubstituteMode()" id="substituteToggleBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs px-3 py-1.5 rounded-lg transition shadow flex items-center space-x-1.5">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span id="substituteBtnText">Preia Rol Octavian</span>
+                    </button>
+                </div>
+
+                <button type="button" id="adminBtn" onclick="toggleAdminModal(true)" class="hidden text-xs bg-purple-900/80 hover:bg-purple-800 text-purple-200 px-3 py-1.5 rounded-lg border border-purple-700 transition">
+                    <i class="fa-solid fa-user-gear mr-1"></i> Panou Admin
+                </button>
+                <button type="button" onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Ieșire
+                </button>
+            </div>
         </header>
+
+        <!-- Banner Notificare Când Modul Înlocuitor Este Activ -->
+        <div id="activeSubstituteNotice" class="hidden bg-amber-500 text-slate-900 px-6 py-2 text-xs font-bold flex justify-between items-center shadow-inner">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-circle-info text-base"></i>
+                <span id="activeSubstituteText">Mod Înlocuitor Activ: Acționați cu drepturile extinse ale lui Octavian (Șef SPCT)</span>
+            </div>
+            <button type="button" onclick="toggleSubstituteMode()" class="bg-slate-900 text-amber-400 hover:bg-slate-800 px-2.5 py-1 rounded text-[11px] transition">
+                Revin-o la Profilul Tău
+            </button>
+        </div>
 
         <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -330,88 +417,67 @@
     </div>
 
     <script>
-        // Utilizatori cu biroul/unitatea asociată
-        const USERS = [
+        // Utilizatori actualizați cu Administrarea și Noua Echipă a Andreei
+        let USERS = JSON.parse(localStorage.getItem('dpct_users')) || [
+            { email: 'admin@dpct.ro', name: 'Admin Sistem', role: 'ADMIN', office: 'Biroul IT', zone: 'ALL' },
+            { email: 'elena@dpct.ro', name: 'Elena', role: 'DIRECTOR', office: 'Direcția DPCT', zone: 'ALL' },
+            { email: 'octavian@dpct.ro', name: 'Octavian', role: 'SEF_SPCT', office: 'Serviciul SPCT', zone: 'SPCT' },
+            { email: 'cristi@dpct.ro', name: 'Cristi', role: 'COORDONATOR', office: 'Biroul Coordonare SPCT 1', zone: 'SPCT_CRISTI' },
+            { email: 'andreea.c@dpct.ro', name: 'Andreea', role: 'COORDONATOR', office: 'Biroul Coordonare SPCT 2', zone: 'SPCT_ANDREEA' },
+
+            // Lucrători Echipa Cristi
             { email: 'alexandra@dpct.ro', name: 'Alexandra', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'anca@dpct.ro', name: 'Anca', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'andreea@dpct.ro', name: 'Andreea', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'bianca@dpct.ro', name: 'Bianca', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'cristi@dpct.ro', name: 'Cristi', role: 'COORDONATOR', office: 'Biroul Coordonare SPCT', zone: 'SPCT_CRISTI' },
             { email: 'daria@dpct.ro', name: 'Daria', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'darius@dpct.ro', name: 'Darius', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'delia.nicolae@dpct.ro', name: 'Delia Nicolae', role: 'LUCRĂTOR', office: 'CPCT Mărgineni', zone: 'SPCT_CRISTI' },
-            { email: 'elena@dpct.ro', name: 'Elena', role: 'DIRECTOR', office: 'Direcția DPCT', zone: 'ALL' },
             { email: 'ioana@dpct.ro', name: 'Ioana', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'ionut@dpct.ro', name: 'Ionuț', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
             { email: 'irina@dpct.ro', name: 'Irina', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'iustina@dpct.ro', name: 'Iustina', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'laurentiu@dpct.ro', name: 'Laurențiu', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'octavian@dpct.ro', name: 'Octavian', role: 'SEF_SPCT', office: 'Serviciul SPCT', zone: 'SPCT' },
-            { email: 'simona@dpct.ro', name: 'Simona', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'stefani@dpct.ro', name: 'Ștefan I', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'stefanm@dpct.ro', name: 'Ștefan M', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' }
+
+            // Lucrători Noi Echipa Andreea
+            { email: 'alex@dpct.ro', name: 'Alex', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'ema@dpct.ro', name: 'Ema', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'iulian@dpct.ro', name: 'Iulian', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'biancan@dpct.ro', name: 'Bianca N', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'elenat@dpct.ro', name: 'Elena T', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'sergiu@dpct.ro', name: 'Sergiu', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'dan@dpct.ro', name: 'Dan', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'silviu@dpct.ro', name: 'Silviu', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'mihai@dpct.ro', name: 'Mihai', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
+            { email: 'george@dpct.ro', name: 'George', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' }
+        ];
+
+        // Delegări active în sistem
+        let DELEGATIONS = JSON.parse(localStorage.getItem('dpct_delegations')) || [
+            { absent: 'octavian@dpct.ro', substitute: 'cristi@dpct.ro', active: true }
         ];
 
         let currentUser = null;
+        let effectiveUser = null; // Utilizatorul ale cărui drepturi sunt preluate în mod înlocuitor
+        let isSubstituteActive = false;
         let activeTab = 'all';
 
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
-            {
-                id: 1,
-                type: 'Petiție',
-                title: 'Petiție formulată de un fost deținut',
-                desc: 'Analiza solicitării privind recalcularea perioadei lucrate în penitenciar.',
-                assignedTo: 'delia.nicolae@dpct.ro',
-                createdBy: 'cristi@dpct.ro',
-                dueDate: '2026-08-26',
-                status: 'IN_PROGRESS',
-                zone: 'SPCT_CRISTI',
-                completionNotes: '',
-                reopenNotes: ''
-            },
-            {
-                id: 2,
-                type: 'Adresă',
-                title: 'Adresă de la Ministerul Justiției',
-                desc: 'Redactare punct de vedere privind modificările legislative propuse.',
-                assignedTo: 'delia.nicolae@dpct.ro',
-                createdBy: 'octavian@dpct.ro',
-                dueDate: '2026-08-25',
-                status: 'PENDING_APPROVAL',
-                zone: 'SPCT_CRISTI',
-                completionNotes: 'Am întocmit proiectul de răspuns sub nr. 4512/2026.',
-                reopenNotes: ''
-            },
-            {
-                id: 3,
-                type: 'Adresă Circulară',
-                title: 'Transmitere instructaj securitate în muncă',
-                desc: 'Transmiterea către toate unitățile subordonate a normelor metodologice.',
-                assignedTo: 'delia.nicolae@dpct.ro',
-                createdBy: 'elena@dpct.ro',
-                dueDate: '2026-08-20',
-                status: 'COMPLETED',
-                zone: 'SPCT_CRISTI',
-                completionNotes: 'Circulara nr. 12/DPCT a fost transmisă pe e-mail.',
-                reopenNotes: ''
-            },
-            {
-                id: 4,
-                type: 'Solicitare Telefonică',
-                title: 'Clarificare privind procedura de transfer',
-                desc: 'Preluat apel de la Penitenciarul Rahova. Transmitere fax Nota Internă.',
-                assignedTo: 'delia.nicolae@dpct.ro',
-                createdBy: 'elena@dpct.ro',
-                dueDate: '2026-08-22',
-                status: 'IN_PROGRESS',
-                zone: 'SPCT_CRISTI',
-                completionNotes: '',
-                reopenNotes: ''
-            }
+            { id: 1, type: 'Petiție', title: 'Petiție recalculare timp lucru', desc: 'Analiză dosar.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI' },
+            { id: 2, type: 'Adresă', title: 'Adresă Ministerul Justiției', desc: 'Redactare răspuns.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-25', status: 'PENDING_APPROVAL', zone: 'SPCT_CRISTI', completionNotes: 'Proiect nr. 4512/2026.' },
+            { id: 3, type: 'Adresă Circulară', title: 'Instructaj SSM', desc: 'Transmitere norme.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'elena@dpct.ro', dueDate: '2026-08-20', status: 'COMPLETED', zone: 'SPCT_CRISTI', completionNotes: 'Circulara nr. 12/DPCT.' },
+            
+            // Sarcini Echipa Andreea
+            { id: 4, type: 'Petiție', title: 'Evaluare inițială NTS', desc: 'Verificare riscuri și necesități.', assignedTo: 'alex@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-27', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 5, type: 'Adresă', title: 'Ședințe consiliere psihologică', desc: 'Derulare program de integrare.', assignedTo: 'ema@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-28', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 6, type: 'Solicitare Telefonică', title: 'Evidență pachete E3', desc: 'Verificare situație cumpărături.', assignedTo: 'iulian@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-25', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 7, type: 'Adresă Circulară', title: 'Planificare activități educative', desc: 'Organizare grupuri de suport.', assignedTo: 'biancan@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-29', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 8, type: 'Petiție', title: 'Recomandări comisie liberare', desc: 'Întocmire raport de evaluare.', assignedTo: 'elenat@dpct.ro', createdBy: 'elena@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 9, type: 'Adresă', title: 'Perfectare transfer administrativ', desc: 'Transmitere dosar medical.', assignedTo: 'sergiu@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 10, type: 'Solicitare Telefonică', title: 'Raport incident disciplinar', desc: 'Verificare note explicative.', assignedTo: 'dan@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-24', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 11, type: 'Petiție', title: 'Includere programe educative', desc: 'Centralizare opțiuni cursuri.', assignedTo: 'silviu@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-31', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 12, type: 'Adresă', title: 'Asistență socială legătură familie', desc: 'Ancheta socială la domiciliu.', assignedTo: 'mihai@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-28', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
+            { id: 13, type: 'Petiție', title: 'Verificare și înregistrare petiții', desc: 'Răspuns la solicitarea nr. 998.', assignedTo: 'george@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Sortare alfabetică utilizatori
             USERS.sort((a, b) => a.name.localeCompare(b.name, 'ro'));
 
             const savedUserEmail = localStorage.getItem('dpct_logged_user');
@@ -419,42 +485,37 @@
                 const user = USERS.find(u => u.email === savedUserEmail);
                 if (user) {
                     currentUser = user;
+                    effectiveUser = user;
                     initDashboard();
                 }
             }
         });
 
-        function saveTasks() {
-            localStorage.setItem('dpct_tasks', JSON.stringify(tasks));
-        }
+        function saveUsers() { localStorage.setItem('dpct_users', JSON.stringify(USERS)); }
+        function saveDelegations() { localStorage.setItem('dpct_delegations', JSON.stringify(DELEGATIONS)); }
+        function saveTasks() { localStorage.setItem('dpct_tasks', JSON.stringify(tasks)); }
 
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
             const pwd = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
 
             const user = USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-            if (!user) {
-                alert('Contul nu există.');
-                return;
-            }
+            if (!user) { alert('Contul nu există.'); return; }
 
             const storedPwd = localStorage.getItem('pwd_' + user.email) || '1234@';
-            if (pwd !== storedPwd) {
-                alert('Parolă incorectă.');
-                return;
-            }
+            if (pwd !== storedPwd) { alert('Parolă incorectă.'); return; }
 
             currentUser = user;
+            effectiveUser = user;
+            isSubstituteActive = false;
 
-            if (rememberMe) {
+            if (document.getElementById('rememberMe').checked) {
                 localStorage.setItem('dpct_logged_user', user.email);
             } else {
                 localStorage.removeItem('dpct_logged_user');
             }
-            
+
             if (storedPwd === '1234@') {
                 document.getElementById('pwdModal').classList.remove('hidden');
             } else {
@@ -466,11 +527,7 @@
             e.preventDefault();
             const newP = document.getElementById('newPwd').value;
             const confP = document.getElementById('confirmPwd').value;
-
-            if (newP !== confP) {
-                alert('Parolele nu se potrivesc!');
-                return;
-            }
+            if (newP !== confP) { alert('Parolele nu se potrivesc!'); return; }
 
             localStorage.setItem('pwd_' + currentUser.email, newP);
             document.getElementById('pwdModal').classList.add('hidden');
@@ -479,19 +536,67 @@
 
         function handleLogout() {
             currentUser = null;
+            effectiveUser = null;
+            isSubstituteActive = false;
             localStorage.removeItem('dpct_logged_user');
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
+        function toggleSubstituteMode() {
+            const delegation = DELEGATIONS.find(d => d.substitute === currentUser.email && d.active);
+            if (!delegation) return;
+
+            const absentUser = USERS.find(u => u.email === delegation.absent);
+            if (!absentUser) return;
+
+            isSubstituteActive = !isSubstituteActive;
+
+            if (isSubstituteActive) {
+                effectiveUser = absentUser;
+                document.getElementById('substituteBtnText').innerText = `Profil Curent: ${absentUser.name}`;
+                document.getElementById('activeSubstituteNotice').classList.remove('hidden');
+                document.getElementById('activeSubstituteText').innerText = `Mod Înlocuitor Activ: Acționați cu drepturile extinse ale lui ${absentUser.name} (${absentUser.office})`;
+            } else {
+                effectiveUser = currentUser;
+                document.getElementById('substituteBtnText').innerText = `Preia Rol ${absentUser.name}`;
+                document.getElementById('activeSubstituteNotice').classList.add('hidden');
+            }
+
+            initDashboardView();
+        }
+
         function initDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('hidden');
-            
-            // Afișare Nume + Birou sus la antet
-            document.getElementById('userDisplay').innerText = `${currentUser.name} — ${currentUser.office}`;
 
-            const isBoss = ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role);
+            // Verificare dacă utilizatorul curent are o delegare activă
+            const delegation = DELEGATIONS.find(d => d.substitute === currentUser.email && d.active);
+            const banner = document.getElementById('substituteBanner');
+            
+            if (delegation) {
+                const absentUser = USERS.find(u => u.email === delegation.absent);
+                document.getElementById('substituteBtnText').innerText = `Preia Rol ${absentUser ? absentUser.name : 'Șef'}`;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            // Buton Admin vizibil doar pentru ADMIN
+            if (currentUser.role === 'ADMIN') {
+                document.getElementById('adminBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('adminBtn').classList.add('hidden');
+            }
+
+            initDashboardView();
+        }
+
+        function initDashboardView() {
+            const userForView = effectiveUser || currentUser;
+            document.getElementById('userDisplay').innerText = `${userForView.name} — ${userForView.office} ${isSubstituteActive ? '(Mod Înlocuitor)' : ''}`;
+
+            const isBoss = ['ADMIN', 'DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(userForView.role);
 
             if (isBoss) {
                 document.getElementById('newTaskBtn').classList.remove('hidden');
@@ -515,8 +620,7 @@
             tasks.forEach(t => {
                 if (t.assignedTo === currentUser.email && t.status === 'IN_PROGRESS') {
                     const taskDate = new Date(t.dueDate);
-                    const diffTime = taskDate - today;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const diffDays = Math.ceil((taskDate - today) / (1000 * 60 * 60 * 24));
 
                     if (diffDays >= 0 && diffDays <= 2) {
                         hasWarnings = true;
@@ -534,19 +638,18 @@
         }
 
         function populateDropdowns() {
+            const activeUser = effectiveUser || currentUser;
             const assigneeSelect = document.getElementById('taskAssignee');
             const filterUserSelect = document.getElementById('filterUser');
             const filterCreatorSelect = document.getElementById('filterCreator');
-            
+
             assigneeSelect.innerHTML = '';
             filterUserSelect.innerHTML = '<option value="">Toți executanții</option>';
             filterCreatorSelect.innerHTML = '<option value="">Toți emitenții (Trasată de oricine)</option>';
 
-            // Ordonare alfabetică garantată
             const sortedUsers = [...USERS].sort((a, b) => a.name.localeCompare(b.name, 'ro'));
 
             sortedUsers.forEach(u => {
-                // Populare dropdown trasată de (Emitenți)
                 const optCreator = document.createElement('option');
                 optCreator.value = u.email;
                 optCreator.textContent = `${u.name} (${u.role})`;
@@ -554,10 +657,10 @@
             });
 
             let visibleUsers = [];
-            if (currentUser.role === 'DIRECTOR') visibleUsers = sortedUsers;
-            else if (currentUser.role === 'SEF_SPCT') visibleUsers = sortedUsers.filter(u => u.zone.startsWith('SPCT'));
-            else if (currentUser.role === 'COORDONATOR') visibleUsers = sortedUsers.filter(u => u.zone === currentUser.zone);
-            else visibleUsers = [currentUser];
+            if (['ADMIN', 'DIRECTOR'].includes(activeUser.role)) visibleUsers = sortedUsers;
+            else if (activeUser.role === 'SEF_SPCT') visibleUsers = sortedUsers.filter(u => u.zone.startsWith('SPCT'));
+            else if (activeUser.role === 'COORDONATOR') visibleUsers = sortedUsers.filter(u => u.zone === activeUser.zone);
+            else visibleUsers = [activeUser];
 
             visibleUsers.forEach(u => {
                 const opt1 = document.createElement('option');
@@ -573,11 +676,12 @@
         }
 
         function getVisibleTasksForUser() {
+            const activeUser = effectiveUser || currentUser;
             return tasks.filter(t => {
-                if (currentUser.role === 'DIRECTOR') return true;
-                if (currentUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) return true;
-                if (currentUser.role === 'COORDONATOR' && t.zone === currentUser.zone) return true;
-                return t.assignedTo === currentUser.email;
+                if (['ADMIN', 'DIRECTOR'].includes(activeUser.role)) return true;
+                if (activeUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) return true;
+                if (activeUser.role === 'COORDONATOR' && t.zone === activeUser.zone) return true;
+                return t.assignedTo === activeUser.email;
             });
         }
 
@@ -595,12 +699,10 @@
                 if (selectedCreator && t.createdBy !== selectedCreator) return false;
                 if (selectedType && t.type !== selectedType) return false;
 
-                // Filtrare stări
                 if (selectedStatus === 'ACTIVE' && t.status === 'COMPLETED') return false;
                 if (selectedStatus === 'PENDING' && t.status !== 'PENDING_APPROVAL') return false;
                 if (selectedStatus === 'COMPLETED' && t.status !== 'COMPLETED') return false;
 
-                // Filtrare după Tab-uri de sus
                 if (activeTab === 'today') return t.dueDate === today && t.status !== 'COMPLETED';
                 if (activeTab === 'soon') return t.dueDate > today && t.status !== 'COMPLETED';
                 if (activeTab === 'overdue') return t.dueDate < today && t.status !== 'COMPLETED';
@@ -637,7 +739,6 @@
             document.getElementById('kpiOverdue').innerText = countOverdue;
             document.getElementById('kpiCompleted').innerText = countCompleted;
 
-            // Sortare cu prioritate: Cele ÎN LUCRU / ÎN AȘTEPTARE sus, cele FINALIZATE jos
             filtered.sort((a, b) => {
                 const statusOrder = { 'IN_PROGRESS': 1, 'PENDING_APPROVAL': 2, 'COMPLETED': 3 };
                 if (statusOrder[a.status] !== statusOrder[b.status]) {
@@ -651,12 +752,14 @@
                 return;
             }
 
+            const activeUser = effectiveUser || currentUser;
+            const isBoss = ['ADMIN', 'DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(activeUser.role);
+
             filtered.forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
                 const creatorUser = USERS.find(u => u.email === t.createdBy);
                 
                 const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
-                
                 const taskDate = new Date(t.dueDate);
                 const diffDays = Math.ceil((taskDate - todayObj) / (1000 * 60 * 60 * 24));
                 const isTwoDaysLeft = diffDays >= 0 && diffDays <= 2 && t.status === 'IN_PROGRESS';
@@ -671,8 +774,6 @@
                 }
 
                 let actionBtn = '';
-                const isBoss = ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role);
-
                 if (t.status === 'PENDING_APPROVAL') {
                     if (isBoss) {
                         actionBtn = `<button type="button" onclick="openApproveModal(${t.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
@@ -687,7 +788,7 @@
                     </button>`;
                 } else if (t.status === 'COMPLETED') {
                     if (isBoss) {
-                        actionBtn = `<button type="button" onclick="openReopenModal(${t.id})" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-800 font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition" title="Redeschide lucrarea pentru clarificări">
+                        actionBtn = `<button type="button" onclick="openReopenModal(${t.id})" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-800 font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition">
                             <i class="fa-solid fa-rotate-left mr-1"></i> Redeschide
                         </button>`;
                     } else {
@@ -720,17 +821,92 @@
             });
         }
 
-        function setTab(tab) {
-            activeTab = tab;
-            renderTasks();
+        function setTab(tab) { activeTab = tab; renderTasks(); }
+        function toggleTaskModal(show) { document.getElementById('taskModal').classList.toggle('hidden', !show); }
+        function toggleDetailModal(show) { document.getElementById('detailModal').classList.toggle('hidden', !show); }
+
+        function toggleAdminModal(show) {
+            if (show) renderAdminPanel();
+            document.getElementById('adminModal').classList.toggle('hidden', !show);
         }
 
-        function toggleTaskModal(show) {
-            document.getElementById('taskModal').classList.toggle('hidden', !show);
+        function renderAdminPanel() {
+            const delAbsent = document.getElementById('delAbsent');
+            const delSubstitute = document.getElementById('delSubstitute');
+            delAbsent.innerHTML = '';
+            delSubstitute.innerHTML = '';
+
+            const bossUsers = USERS.filter(u => ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(u.role));
+            bossUsers.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.email;
+                opt.textContent = `${u.name} (${u.role})`;
+                delAbsent.appendChild(opt);
+            });
+
+            USERS.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.email;
+                opt.textContent = `${u.name} (${u.role})`;
+                delSubstitute.appendChild(opt);
+            });
+
+            const tbody = document.getElementById('adminUsersTable');
+            tbody.innerHTML = '';
+
+            USERS.forEach(u => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800">${u.name}<br><span class="text-[10px] font-normal text-slate-400">${u.email}</span></td>
+                    <td class="p-3 text-slate-600">${u.office}</td>
+                    <td class="p-3">
+                        <select onchange="updateUserRole('${u.email}', this.value)" class="px-2 py-1 border rounded bg-white text-xs font-semibold">
+                            <option value="LUCRĂTOR" ${u.role === 'LUCRĂTOR' ? 'selected' : ''}>LUCRĂTOR</option>
+                            <option value="COORDONATOR" ${u.role === 'COORDONATOR' ? 'selected' : ''}>COORDONATOR</option>
+                            <option value="SEF_SPCT" ${u.role === 'SEF_SPCT' ? 'selected' : ''}>SEF_SPCT</option>
+                            <option value="DIRECTOR" ${u.role === 'DIRECTOR' ? 'selected' : ''}>DIRECTOR</option>
+                            <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-slate-600 font-mono">${u.zone}</td>
+                    <td class="p-3 text-right">
+                        <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded border border-purple-200">Activ</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function toggleDetailModal(show) {
-            document.getElementById('detailModal').classList.toggle('hidden', !show);
+        function updateUserRole(email, newRole) {
+            const user = USERS.find(u => u.email === email);
+            if (user) {
+                user.role = newRole;
+                saveUsers();
+                alert(`Rolul lui ${user.name} a fost modificat în ${newRole}.`);
+                initDashboardView();
+            }
+        }
+
+        function handleSaveDelegation(e) {
+            e.preventDefault();
+            const absent = document.getElementById('delAbsent').value;
+            const substitute = document.getElementById('delSubstitute').value;
+
+            if (absent === substitute) {
+                alert('Titularul și înlocuitorul nu pot fi aceeași persoană!');
+                return;
+            }
+
+            DELEGATIONS.push({ absent, substitute, active: true });
+            saveDelegations();
+
+            const absentUser = USERS.find(u => u.email === absent);
+            const subUser = USERS.find(u => u.email === substitute);
+
+            alert(`Delegare salvată! ${subUser.name} îl va putea înlocui pe ${absentUser.name}.`);
+            toggleAdminModal(false);
+            initDashboard();
         }
 
         function openDetailModal(id) {
@@ -790,6 +966,7 @@
             const dueDate = document.getElementById('taskDueDate').value;
 
             const targetUser = USERS.find(u => u.email === assignedTo);
+            const activeUser = effectiveUser || currentUser;
 
             const newTask = {
                 id: Date.now(),
@@ -797,7 +974,7 @@
                 title,
                 desc,
                 assignedTo,
-                createdBy: currentUser.email,
+                createdBy: activeUser.email,
                 dueDate,
                 status: 'IN_PROGRESS',
                 zone: targetUser ? targetUser.zone : 'SPCT_CRISTI',
@@ -810,15 +987,11 @@
             toggleTaskModal(false);
             
             alert(`Sarcina a fost alocată cu succes către ${targetUser ? targetUser.name : assignedTo}!`);
-            
             document.getElementById('taskForm').reset();
             renderTasks();
         }
 
-        function toggleCompleteModal(show) {
-            document.getElementById('completeModal').classList.toggle('hidden', !show);
-        }
-
+        function toggleCompleteModal(show) { document.getElementById('completeModal').classList.toggle('hidden', !show); }
         function openCompleteModal(id) {
             document.getElementById('completeTaskId').value = id;
             document.getElementById('completionNotes').value = '';
@@ -830,28 +1003,24 @@
             const id = parseInt(document.getElementById('completeTaskId').value);
             const notes = document.getElementById('completionNotes').value;
             const task = tasks.find(t => t.id === id);
+            const activeUser = effectiveUser || currentUser;
 
             if (task) {
                 task.completionNotes = notes;
-                
-                if (currentUser.role === 'LUCRĂTOR') {
+                if (activeUser.role === 'LUCRĂTOR') {
                     task.status = 'PENDING_APPROVAL';
                     alert('Sarcina a fost trimisă către coordonator pentru confirmare!');
                 } else {
                     task.status = 'COMPLETED';
                     alert('Sarcina a fost marcată ca finalizată!');
                 }
-                
                 saveTasks();
                 toggleCompleteModal(false);
                 renderTasks();
             }
         }
 
-        function toggleReopenModal(show) {
-            document.getElementById('reopenModal').classList.toggle('hidden', !show);
-        }
-
+        function toggleReopenModal(show) { document.getElementById('reopenModal').classList.toggle('hidden', !show); }
         function openReopenModal(id) {
             document.getElementById('reopenTaskId').value = id;
             document.getElementById('reopenReason').value = '';
@@ -863,10 +1032,12 @@
             const id = parseInt(document.getElementById('reopenTaskId').value);
             const reason = document.getElementById('reopenReason').value;
             const task = tasks.find(t => t.id === id);
+            const activeUser = effectiveUser || currentUser;
 
             if (task) {
                 task.status = 'IN_PROGRESS';
-                task.reopenNotes = `[Redeschis la ${new Date().toLocaleDateString('ro-RO')} de ${currentUser.name}]: ${reason}`;
+                const substituteTag = isSubstituteActive ? ` (Înlocuitor al lui ${effectiveUser.name})` : '';
+                task.reopenNotes = `[Redeschis la ${new Date().toLocaleDateString('ro-RO')} de ${currentUser.name}${substituteTag}]: ${reason}`;
                 saveTasks();
                 toggleReopenModal(false);
                 alert('Sarcina a fost redeschisă și retrimisă executantului!');
