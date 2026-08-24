@@ -53,6 +53,50 @@
         </div>
     </div>
 
+    <!-- Modal Detalii Sarcină -->
+    <div id="detailModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
+            <div class="flex justify-between items-start mb-4 border-b pb-3">
+                <div>
+                    <span id="detailTypeBadge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"></span>
+                    <h3 id="detailTitle" class="text-lg font-bold text-slate-900 mt-1"></h3>
+                </div>
+                <button type="button" onclick="toggleDetailModal(false)" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3 text-sm">
+                <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-100 text-xs">
+                    <div>
+                        <span class="text-slate-400 block font-semibold uppercase">Trasată de:</span>
+                        <span id="detailCreatedBy" class="font-bold text-slate-700"></span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block font-semibold uppercase">Atribuită lui:</span>
+                        <span id="detailAssignedTo" class="font-bold text-slate-700"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-slate-400 block font-semibold uppercase">Termen Limită:</span>
+                        <span id="detailDueDate" class="font-bold text-slate-700"></span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-slate-400 block font-semibold uppercase">Status Curent:</span>
+                        <span id="detailStatus" class="font-bold"></span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Instrucțiuni & Descriere:</h4>
+                    <div id="detailDesc" class="p-3 bg-slate-50 rounded-lg text-slate-700 border border-slate-100 text-sm leading-relaxed whitespace-pre-line"></div>
+                </div>
+                <div id="detailNotesContainer" class="hidden">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Notă de finalizare / Rezolvare:</h4>
+                    <div id="detailNotes" class="p-3 bg-emerald-50 text-emerald-900 rounded-lg border border-emerald-100 text-sm"></div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button type="button" onclick="toggleDetailModal(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-medium text-sm">Închide</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Adaugare Sarcina Noua -->
     <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
@@ -61,26 +105,35 @@
                 <button type="button" onclick="toggleTaskModal(false)" class="text-slate-400 hover:text-slate-600 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <form id="taskForm" onsubmit="handleCreateTask(event)" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Tip Lucrare</label>
+                        <select id="taskType" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Petiție">Petiție</option>
+                            <option value="Adresă">Adresă</option>
+                            <option value="Adresă Circulară">Adresă Circulară</option>
+                            <option value="Solicitare Telefonică">Solicitare Telefonică</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Termen Limită</label>
+                        <input type="date" id="taskDueDate" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Titlu / Denumire Lucrare</label>
                     <input type="text" id="taskTitle" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Descriere & Detalii</label>
-                    <textarea id="taskDesc" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Descriere & Detalii Trasate</label>
+                    <textarea id="taskDesc" rows="3" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Specificați detaliile necesare pentru soluționare..."></textarea>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Atribuie Lucrătorului</label>
-                        <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Termen Limită</label>
-                        <input type="date" id="taskDueDate" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Atribuie Lucrătorului</label>
+                    <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg shadow-md transition">
+                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2.5 rounded-lg shadow-md transition">
                     Salvează și Trimite Notificare
                 </button>
             </form>
@@ -120,22 +173,26 @@
     <div id="loginScreen" class="flex min-h-screen items-center justify-center p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-900 text-white rounded-2xl mb-4 shadow-lg">
-                    <i class="fa-solid fa-shield-halved text-2xl"></i>
+                <!-- LOGO DPCT OFICIAL -->
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-900 text-amber-400 rounded-2xl mb-4 shadow-xl border-2 border-amber-500/30 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent"></div>
+                    <div class="flex flex-col items-center justify-center z-10">
+                        <i class="fa-solid fa-shield-halved text-2xl mb-0.5 text-amber-400"></i>
+                        <span class="text-[10px] font-black tracking-widest text-white leading-none">DPCT</span>
+                    </div>
                 </div>
-                <h1 class="text-2xl font-bold text-slate-900">DPCT ANP</h1>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Sistem Gestiune Termene</p>
+                <h1 class="text-2xl font-bold text-slate-900">DPCT - ANP</h1>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene & Lucrări</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Adresă e-mail</label>
-                    <input type="email" id="email" required placeholder="nume@termenedpct.ro" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="email" id="email" required placeholder="nume@dpct.ro" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Parolă</label>
                     <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
-                <!-- OPȚIUNE PĂSTREAZĂ-MĂ AUTENTIFICAT -->
                 <div class="flex items-center justify-between">
                     <label class="flex items-center space-x-2 cursor-pointer">
                         <input type="checkbox" id="rememberMe" class="w-4 h-4 text-blue-900 rounded border-slate-300 focus:ring-blue-500">
@@ -151,11 +208,13 @@
 
     <!-- ECRAN PRINCIPAL (DASHBOARD) -->
     <div id="appScreen" class="hidden min-h-screen flex flex-col">
-        <header class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+        <header class="bg-slate-900 text-white px-6 py-3.5 flex justify-between items-center shadow-md border-b border-slate-800">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-shield-halved text-blue-400 text-xl"></i>
+                <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 text-amber-400">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
                 <div>
-                    <h2 class="font-bold leading-tight">DPCT - Termene</h2>
+                    <h2 class="font-bold leading-tight text-sm tracking-wide">DPCT - Termene</h2>
                     <p id="userDisplay" class="text-xs text-slate-400"></p>
                 </div>
             </div>
@@ -167,7 +226,7 @@
         <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 class="text-2xl font-bold text-slate-900">Tablou de Bord</h1>
-                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="hidden bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-md flex items-center space-x-2 transition">
+                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="hidden bg-blue-900 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-md flex items-center space-x-2 transition">
                     <i class="fa-solid fa-plus"></i>
                     <span>Alocare Sarcină Nouă</span>
                 </button>
@@ -192,10 +251,22 @@
                 </div>
             </div>
 
+            <!-- Filtre Adaptative (Diferite pentru Coordonatori vs Lucrători) -->
             <div id="filterSection" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-4 items-center">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider"><i class="fa-solid fa-filter mr-1"></i> Filtre:</span>
-                <select id="filterUser" onchange="renderTasks()" class="px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                
+                <!-- Filtru Persoane (Vizibil doar pentru Coordonatori/Sefi) -->
+                <select id="filterUser" onchange="renderTasks()" class="hidden px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                     <option value="">Toți lucrătorii</option>
+                </select>
+
+                <!-- Filtru Tip Lucrare (Vizibil pentru TOTI) -->
+                <select id="filterType" onchange="renderTasks()" class="px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option value="">Toate tipurile de lucrări</option>
+                    <option value="Petiție">Petiție</option>
+                    <option value="Adresă">Adresă</option>
+                    <option value="Adresă Circulară">Adresă Circulară</option>
+                    <option value="Solicitare Telefonică">Solicitare Telefonică</option>
                 </select>
             </div>
 
@@ -204,7 +275,8 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b">
-                                <th class="p-4">Lucrare / Descriere</th>
+                                <th class="p-4">Tip / Lucrare</th>
+                                <th class="p-4">Trasată de</th>
                                 <th class="p-4">Atribuit</th>
                                 <th class="p-4">Termen Limită</th>
                                 <th class="p-4">Status</th>
@@ -221,35 +293,93 @@
 
     <script>
         const USERS = [
-            { email: 'elena@termenedpct.ro', name: 'Elena', role: 'DIRECTOR', zone: 'ALL' },
-            { email: 'octavian@termenedpct.ro', name: 'Octavian', role: 'SEF_SPCT', zone: 'SPCT' },
-            { email: 'cristi@termenedpct.ro', name: 'Cristi', role: 'COORDONATOR', zone: 'SPCT_CRISTI' },
-            { email: 'delia@termenedpct.ro', name: 'Delia', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'daria@termenedpct.ro', name: 'Daria', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'iustina@termenedpct.ro', name: 'Iustina', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'stefani@termenedpct.ro', name: 'Ștefan I', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'laurentiu@termenedpct.ro', name: 'Laurențiu', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'ioana@termenedpct.ro', name: 'Ioana', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'stefanm@termenedpct.ro', name: 'Ștefan M', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'irina@termenedpct.ro', name: 'Irina', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'bianca@termenedpct.ro', name: 'Bianca', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'darius@termenedpct.ro', name: 'Darius', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'andreea@termenedpct.ro', name: 'Andreea', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'alexandra@termenedpct.ro', name: 'Alexandra', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'anca@termenedpct.ro', name: 'Anca', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'ionut@termenedpct.ro', name: 'Ionuț', role: 'ANGAJAT', zone: 'SPCT_CRISTI' },
-            { email: 'simona@termenedpct.ro', name: 'Simona', role: 'ANGAJAT', zone: 'SPCT_CRISTI' }
+            { email: 'elena@dpct.ro', name: 'Elena', role: 'DIRECTOR', zone: 'ALL' },
+            { email: 'octavian@dpct.ro', name: 'Octavian', role: 'SEF_SPCT', zone: 'SPCT' },
+            { email: 'cristi@dpct.ro', name: 'Cristi', role: 'COORDONATOR', zone: 'SPCT_CRISTI' },
+            { email: 'delia.nicolae@dpct.ro', name: 'Delia Nicolae', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'daria@dpct.ro', name: 'Daria', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'iustina@dpct.ro', name: 'Iustina', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'stefani@dpct.ro', name: 'Ștefan I', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'laurentiu@dpct.ro', name: 'Laurențiu', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'ioana@dpct.ro', name: 'Ioana', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'stefanm@dpct.ro', name: 'Ștefan M', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'irina@dpct.ro', name: 'Irina', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'bianca@dpct.ro', name: 'Bianca', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'darius@dpct.ro', name: 'Darius', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'andreea@dpct.ro', name: 'Andreea', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'alexandra@dpct.ro', name: 'Alexandra', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'anca@dpct.ro', name: 'Anca', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'ionut@dpct.ro', name: 'Ionuț', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' },
+            { email: 'simona@dpct.ro', name: 'Simona', role: 'LUCRĂTOR', zone: 'SPCT_CRISTI' }
         ];
 
         let currentUser = null;
         let activeTab = 'all';
 
+        // Sarcini cu exemple complete pentru Delia pe toate tipurile si stările
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
-            { id: 1, title: 'Raport evaluare riscuri', desc: 'Transmitere răspuns către ANP', assignedTo: 'delia@termenedpct.ro', createdBy: 'cristi@termenedpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' },
-            { id: 2, title: 'Adresă informare penitenciar', desc: 'Verificare documente', assignedTo: 'daria@termenedpct.ro', createdBy: 'octavian@termenedpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' }
+            {
+                id: 1,
+                type: 'Petiție',
+                title: 'Petiție formulată de un fost deținut',
+                desc: 'Analiza solicitării privind recalcularea perioadei lucrate în penitenciar. Verificați pontajele din arhiva unității pe anul 2024.',
+                assignedTo: 'delia.nicolae@dpct.ro',
+                createdBy: 'cristi@dpct.ro',
+                dueDate: '2026-08-26',
+                status: 'IN_PROGRESS',
+                zone: 'SPCT_CRISTI',
+                completionNotes: ''
+            },
+            {
+                id: 2,
+                type: 'Adresă',
+                title: 'Adresă de la Ministerul Justiției',
+                desc: 'Redactare punct de vedere privind modificările legislative propuse. A se consulta Ghidul ANP actualizat.',
+                assignedTo: 'delia.nicolae@dpct.ro',
+                createdBy: 'octavian@dpct.ro',
+                dueDate: '2026-08-25',
+                status: 'PENDING_APPROVAL',
+                zone: 'SPCT_CRISTI',
+                completionNotes: 'Am întocmit proiectul de răspuns și l-am atașat la lucrare sub nr. 4512/2026.'
+            },
+            {
+                id: 3,
+                type: 'Adresă Circulară',
+                title: 'Transmitere instructaj securitate în muncă',
+                desc: 'Transmiterea către toate unitățile subordonate a normelor metodologice actualizate.',
+                assignedTo: 'delia.nicolae@dpct.ro',
+                createdBy: 'elena@dpct.ro',
+                dueDate: '2026-08-20',
+                status: 'COMPLETED',
+                zone: 'SPCT_CRISTI',
+                completionNotes: 'Circulara nr. 12/DPCT a fost transmisă pe e-mailul instituțional al tuturor unităților.'
+            },
+            {
+                id: 4,
+                type: 'Solicitare Telefonică',
+                title: 'Clarificare privind procedura de transfer',
+                desc: 'Preluat apel de la Penitenciarul Rahova. Necesită transmiterea prin fax a Notei Interne aprobată.',
+                assignedTo: 'delia.nicolae@dpct.ro',
+                createdBy: 'cristi@dpct.ro',
+                dueDate: '2026-08-22',
+                status: 'IN_PROGRESS',
+                zone: 'SPCT_CRISTI',
+                completionNotes: ''
+            },
+            {
+                id: 5,
+                type: 'Adresă',
+                title: 'Adresă Direcția Juridică',
+                desc: 'Formularea întâmpinării în dosarul nr. 1820/2026 aflat pe rolul Tribunalului București.',
+                assignedTo: 'daria@dpct.ro',
+                createdBy: 'cristi@dpct.ro',
+                dueDate: '2026-08-30',
+                status: 'IN_PROGRESS',
+                zone: 'SPCT_CRISTI',
+                completionNotes: ''
+            }
         ];
 
-        // Verificare sesiune la încărcarea paginii
         window.addEventListener('DOMContentLoaded', () => {
             const savedUserEmail = localStorage.getItem('dpct_logged_user');
             if (savedUserEmail) {
@@ -327,10 +457,14 @@
             
             document.getElementById('userDisplay').innerText = `${currentUser.name} (${currentUser.role})`;
 
-            if (['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role)) {
+            const isBoss = ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role);
+
+            if (isBoss) {
                 document.getElementById('newTaskBtn').classList.remove('hidden');
+                document.getElementById('filterUser').classList.remove('hidden');
             } else {
                 document.getElementById('newTaskBtn').classList.add('hidden');
+                document.getElementById('filterUser').classList.add('hidden');
             }
 
             populateUserDropdowns();
@@ -353,8 +487,8 @@
                     if (diffDays >= 0 && diffDays <= 2) {
                         hasWarnings = true;
                         const item = document.createElement('div');
-                        item.className = "p-2 bg-amber-50 border border-amber-200 rounded text-slate-800 font-medium";
-                        item.innerHTML = `📌 <strong>${t.title}</strong> — <span class="text-amber-700">Termen: ${t.dueDate} (${diffDays === 0 ? 'Azi' : diffDays + ' zile rămase'})</span>`;
+                        item.className = "p-2 bg-amber-50 border border-amber-200 rounded text-slate-800 text-xs font-medium";
+                        item.innerHTML = `📌 <strong>[${t.type}] ${t.title}</strong> — <span class="text-amber-700 font-bold">Termen: ${t.dueDate} (${diffDays === 0 ? 'Azi' : diffDays + ' zile rămase'})</span>`;
                         warningList.appendChild(item);
                     }
                 }
@@ -391,20 +525,25 @@
             });
         }
 
+        function getVisibleTasksForUser() {
+            return tasks.filter(t => {
+                if (currentUser.role === 'DIRECTOR') return true;
+                if (currentUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) return true;
+                if (currentUser.role === 'COORDONATOR' && t.zone === currentUser.zone) return true;
+                return t.assignedTo === currentUser.email;
+            });
+        }
+
         function getFilteredTasks() {
             const today = new Date().toISOString().split('T')[0];
+            const visibleTasks = getVisibleTasksForUser();
 
-            return tasks.filter(t => {
-                let canSee = false;
-                if (currentUser.role === 'DIRECTOR') canSee = true;
-                else if (currentUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) canSee = true;
-                else if (currentUser.role === 'COORDONATOR' && t.zone === currentUser.zone) canSee = true;
-                else if (t.assignedTo === currentUser.email) canSee = true;
+            const selectedUser = document.getElementById('filterUser').value;
+            const selectedType = document.getElementById('filterType').value;
 
-                if (!canSee) return false;
-
-                const selectedUser = document.getElementById('filterUser').value;
+            return visibleTasks.filter(t => {
                 if (selectedUser && t.assignedTo !== selectedUser) return false;
+                if (selectedType && t.type !== selectedType) return false;
 
                 if (activeTab === 'today') return t.dueDate === today && t.status !== 'COMPLETED';
                 if (activeTab === 'soon') return t.dueDate > today && t.status !== 'COMPLETED';
@@ -416,6 +555,7 @@
 
         function renderTasks() {
             const filtered = getFilteredTasks();
+            const visibleTasks = getVisibleTasksForUser();
             const tbody = document.getElementById('taskTableBody');
             tbody.innerHTML = '';
 
@@ -424,31 +564,28 @@
 
             let countToday = 0, countSoon = 0, countOverdue = 0;
             
-            tasks.forEach(t => {
-                let canSee = (currentUser.role === 'DIRECTOR') || 
-                             (currentUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) ||
-                             (currentUser.role === 'COORDONATOR' && t.zone === currentUser.zone) ||
-                             (t.assignedTo === currentUser.email);
-                             
-                if (canSee && t.status !== 'COMPLETED') {
+            visibleTasks.forEach(t => {
+                if (t.status !== 'COMPLETED') {
                     if (t.dueDate === todayStr) countToday++;
                     else if (t.dueDate > todayStr) countSoon++;
                     else if (t.dueDate < todayStr) countOverdue++;
                 }
             });
 
-            document.getElementById('kpiAll').innerText = tasks.length;
+            document.getElementById('kpiAll').innerText = visibleTasks.length;
             document.getElementById('kpiToday').innerText = countToday;
             document.getElementById('kpiSoon').innerText = countSoon;
             document.getElementById('kpiOverdue').innerText = countOverdue;
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">Nu există sarcini în această categorie.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există sarcini în această categorie.</td></tr>`;
                 return;
             }
 
             filtered.forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                const creatorUser = USERS.find(u => u.email === t.createdBy);
+                
                 const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
                 
                 const taskDate = new Date(t.dueDate);
@@ -470,33 +607,38 @@
                 if (t.status === 'PENDING_APPROVAL') {
                     if (isBoss) {
                         actionBtn = `<button type="button" onclick="openApproveModal(${t.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
-                            <i class="fa-solid fa-clock-rotate-left mr-1"></i> Revizuiește & Aprobă
+                            <i class="fa-solid fa-clock-rotate-left mr-1"></i> Revizuiește
                         </button>`;
                     } else {
-                        actionBtn = `<span class="text-xs text-amber-600 italic">Așteaptă confirmarea coordonatorului</span>`;
+                        actionBtn = `<span class="text-xs text-amber-600 italic font-medium">Spre aprobare</span>`;
                     }
                 } else if (t.status === 'IN_PROGRESS') {
-                    actionBtn = `<button type="button" onclick="openCompleteModal(${t.id})" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 transition">
+                    actionBtn = `<button type="button" onclick="openCompleteModal(${t.id})" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 transition">
                         Bifează Finalizare
                     </button>`;
                 } else if (t.status === 'COMPLETED') {
-                    actionBtn = `<div class="text-xs text-emerald-600"><i class="fa-solid fa-check mr-1"></i> Finalizat</div>`;
+                    actionBtn = `<div class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-check mr-1"></i> Finalizat</div>`;
                 }
 
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
+                tr.className = "hover:bg-slate-50 transition cursor-pointer";
                 tr.innerHTML = `
-                    <td class="p-4">
-                        <div class="font-bold text-slate-900">${t.title}</div>
-                        <div class="text-xs text-slate-500">${t.desc || '-'}</div>
-                        ${t.completionNotes ? `<div class="mt-1 text-xs bg-slate-100 p-1.5 rounded text-slate-600"><strong>Notă finalizare:</strong> ${t.completionNotes}</div>` : ''}
+                    <td class="p-4" onclick="openDetailModal(${t.id})">
+                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">${t.type || 'Sarcina'}</span>
+                        <div class="font-bold text-slate-900 mt-1 hover:text-blue-600">${t.title}</div>
+                        <div class="text-xs text-slate-500 line-clamp-1">${t.desc || '-'}</div>
                     </td>
-                    <td class="p-4 font-medium text-slate-700">${assignedUser ? assignedUser.name : t.assignedTo}</td>
-                    <td class="p-4 font-mono text-xs">
+                    <td class="p-4 font-medium text-slate-600 text-xs" onclick="openDetailModal(${t.id})">
+                        <i class="fa-solid fa-user-pen mr-1 text-slate-400"></i> ${creatorUser ? creatorUser.name : t.createdBy}
+                    </td>
+                    <td class="p-4 font-medium text-slate-700 text-xs" onclick="openDetailModal(${t.id})">
+                        <i class="fa-solid fa-user-check mr-1 text-slate-400"></i> ${assignedUser ? assignedUser.name : t.assignedTo}
+                    </td>
+                    <td class="p-4 font-mono text-xs" onclick="openDetailModal(${t.id})">
                         <span class="${isOverdue ? 'text-red-600 font-bold' : (isTwoDaysLeft ? 'text-amber-600 font-bold' : 'text-slate-600')}">${t.dueDate}</span>
                         ${isTwoDaysLeft ? `<br><span class="inline-block mt-1 px-2 py-0.5 text-[10px] bg-amber-100 text-amber-800 font-semibold rounded">⏳ Termen în 2 zile</span>` : ''}
                     </td>
-                    <td class="p-4">${statusBadge}</td>
+                    <td class="p-4" onclick="openDetailModal(${t.id})">${statusBadge}</td>
                     <td class="p-4 text-right">${actionBtn}</td>
                 `;
                 tbody.appendChild(tr);
@@ -512,8 +654,53 @@
             document.getElementById('taskModal').classList.toggle('hidden', !show);
         }
 
+        function toggleDetailModal(show) {
+            document.getElementById('detailModal').classList.toggle('hidden', !show);
+        }
+
+        function openDetailModal(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            const assignedUser = USERS.find(u => u.email === task.assignedTo);
+            const creatorUser = USERS.find(u => u.email === task.createdBy);
+
+            document.getElementById('detailTypeBadge').innerText = task.type || 'SARCINĂ';
+            document.getElementById('detailTitle').innerText = task.title;
+            document.getElementById('detailCreatedBy').innerText = creatorUser ? `${creatorUser.name} (${creatorUser.role})` : task.createdBy;
+            document.getElementById('detailAssignedTo').innerText = assignedUser ? `${assignedUser.name}` : task.assignedTo;
+            document.getElementById('detailDueDate').innerText = task.dueDate;
+            document.getElementById('detailDesc').innerText = task.desc || 'Fără instrucțiuni suplimentare.';
+
+            let statusTxt = 'În lucru';
+            let statusClass = 'text-blue-600';
+
+            if (task.status === 'PENDING_APPROVAL') {
+                statusTxt = 'În așteptare aprobare';
+                statusClass = 'text-amber-600';
+            } else if (task.status === 'COMPLETED') {
+                statusTxt = 'Finalizată';
+                statusClass = 'text-emerald-600';
+            }
+            
+            const detailStatusEl = document.getElementById('detailStatus');
+            detailStatusEl.innerText = statusTxt;
+            detailStatusEl.className = `font-bold ${statusClass}`;
+
+            const notesContainer = document.getElementById('detailNotesContainer');
+            if (task.completionNotes) {
+                document.getElementById('detailNotes').innerText = task.completionNotes;
+                notesContainer.classList.remove('hidden');
+            } else {
+                notesContainer.classList.add('hidden');
+            }
+
+            toggleDetailModal(true);
+        }
+
         function handleCreateTask(e) {
             e.preventDefault();
+            const type = document.getElementById('taskType').value;
             const title = document.getElementById('taskTitle').value;
             const desc = document.getElementById('taskDesc').value;
             const assignedTo = document.getElementById('taskAssignee').value;
@@ -523,6 +710,7 @@
 
             const newTask = {
                 id: Date.now(),
+                type,
                 title,
                 desc,
                 assignedTo,
@@ -537,7 +725,7 @@
             saveTasks();
             toggleTaskModal(false);
             
-            alert(`Sarcina a fost alocată cu succes către ${assignedTo}!`);
+            alert(`Sarcina a fost alocată cu succes către ${targetUser ? targetUser.name : assignedTo}!`);
             
             document.getElementById('taskForm').reset();
             renderTasks();
@@ -562,7 +750,7 @@
             if (task) {
                 task.completionNotes = notes;
                 
-                if (currentUser.role === 'ANGAJAT') {
+                if (currentUser.role === 'LUCRĂTOR') {
                     task.status = 'PENDING_APPROVAL';
                     alert('Sarcina a fost trimisă către coordonator pentru confirmare!');
                 } else {
@@ -584,6 +772,7 @@
             const assignedUser = USERS.find(u => u.email === task.assignedTo);
             
             document.getElementById('approveModalDetails').innerHTML = `
+                <div><strong>Tip:</strong> ${task.type || '-'}</div>
                 <div><strong>Lucrare:</strong> ${task.title}</div>
                 <div><strong>Executant:</strong> ${assignedUser ? assignedUser.name : task.assignedTo}</div>
                 <div><strong>Explicație/Nr. Document:</strong> ${task.completionNotes || 'Fără explicație'}</div>
