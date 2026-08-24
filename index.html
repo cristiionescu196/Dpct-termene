@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DPCT - Gestiune Termene & Administrare</title>
+    <title>DPCT - Gestiune Termene Penitenciare</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -28,21 +28,18 @@
                 <button type="button" onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
-            <!-- Sectiune 1: Configurare Înlocuitori / Delegări -->
             <div class="mb-8 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
                 <h4 class="text-sm font-bold text-purple-900 mb-3 flex items-center">
                     <i class="fa-solid fa-user-shield mr-2"></i> Setare Delegare Temporară (Înlocuitor Șef)
                 </h4>
                 <form onsubmit="handleSaveDelegation(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Titular Absent (Șef/Coordonator)</label>
-                        <select id="delAbsent" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none">
-                        </select>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Titular Absent</label>
+                        <select id="delAbsent" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Înlocuitor Desemnat</label>
-                        <select id="delSubstitute" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none">
-                        </select>
+                        <select id="delSubstitute" required class="w-full px-3 py-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-500 outline-none"></select>
                     </div>
                     <div class="flex items-end">
                         <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-lg text-xs shadow transition">
@@ -52,7 +49,6 @@
                 </form>
             </div>
 
-            <!-- Sectiune 2: Tabel Utilizatori & Roluri -->
             <div>
                 <h4 class="text-sm font-bold text-slate-800 mb-3">Organigramă Utilizatori & Drepturi</h4>
                 <div class="border rounded-xl overflow-hidden text-xs">
@@ -60,14 +56,12 @@
                         <thead class="bg-slate-100 text-slate-600 border-b">
                             <tr>
                                 <th class="p-3">Utilizator</th>
-                                <th class="p-3">Birou / Unitate</th>
+                                <th class="p-3">Unitate / Birou</th>
                                 <th class="p-3">Rol Curent</th>
-                                <th class="p-3">Zona / Sector</th>
                                 <th class="p-3 text-right">Acțiuni</th>
                             </tr>
                         </thead>
-                        <tbody id="adminUsersTable" class="divide-y divide-slate-100">
-                        </tbody>
+                        <tbody id="adminUsersTable" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -86,32 +80,6 @@
             <button type="button" onclick="document.getElementById('dueWarningModal').classList.add('hidden')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-lg transition shadow">
                 Am înțeles!
             </button>
-        </div>
-    </div>
-
-    <!-- Modal Schimbare Parolă Obligatorie -->
-    <div id="pwdModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div class="text-center mb-6">
-                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-900">Schimbare Parolă Obligatorie</h3>
-                <p class="text-sm text-slate-500 mt-1">Introduceți o parolă nouă pentru securitatea contului.</p>
-            </div>
-            <form id="pwdForm" onsubmit="handlePasswordChange(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Parolă Nouă</label>
-                    <input type="password" id="newPwd" required minlength="4" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Confirmă Parola</label>
-                    <input type="password" id="confirmPwd" required minlength="4" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition shadow-md">
-                    Salvează Parola
-                </button>
-            </form>
         </div>
     </div>
 
@@ -152,10 +120,6 @@
                     <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Notă de finalizare / Rezolvare:</h4>
                     <div id="detailNotes" class="p-3 bg-emerald-50 text-emerald-900 rounded-lg border border-emerald-100 text-sm"></div>
                 </div>
-                <div id="detailReopenContainer" class="hidden">
-                    <h4 class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">Motiv Redeschidere / Observații Coordonator:</h4>
-                    <div id="detailReopenNotes" class="p-3 bg-red-50 text-red-900 rounded-lg border border-red-100 text-sm"></div>
-                </div>
             </div>
             <div class="mt-6 flex justify-end">
                 <button type="button" onclick="toggleDetailModal(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-medium text-sm">Închide</button>
@@ -167,12 +131,12 @@
     <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-slate-900">Alocare Sarcină Nouă</h3>
+                <h3 class="text-lg font-bold text-slate-900">Alocare Termen Nou</h3>
                 <button type="button" onclick="toggleTaskModal(false)" class="text-slate-400 hover:text-slate-600 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             <form id="taskForm" onsubmit="handleCreateTask(event)" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2 sm:col-span-1">
+                    <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Tip Lucrare</label>
                         <select id="taskType" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                             <option value="Petiție">Petiție</option>
@@ -181,7 +145,7 @@
                             <option value="Solicitare Telefonică">Solicitare Telefonică</option>
                         </select>
                     </div>
-                    <div class="col-span-2 sm:col-span-1">
+                    <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Termen Limită</label>
                         <input type="date" id="taskDueDate" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
@@ -196,58 +160,12 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Atribuie Lucrătorului</label>
-                    <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                    </select>
+                    <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></select>
                 </div>
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2.5 rounded-lg shadow-md transition">
-                    Salvează și Trimite Notificare
+                    Salvează și Adaugă Termenul
                 </button>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal Finalizare -->
-    <div id="completeModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <h3 class="text-lg font-bold text-slate-900 mb-2">Detalii Finalizare Lucrare</h3>
-            <p class="text-xs text-slate-500 mb-4">Introduceți modul de rezolvare și numărul de înregistrare al răspunsului.</p>
-            <form onsubmit="confirmTaskCompletion(event)">
-                <input type="hidden" id="completeTaskId">
-                <textarea id="completionNotes" required rows="3" placeholder="Ex: S-a transmis adresa nr. 12345/DPCT din 24.08.2026..." class="w-full p-3 border rounded-lg text-sm mb-4 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-                <div class="flex gap-2">
-                    <button type="button" onclick="toggleCompleteModal(false)" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-lg font-medium text-sm">Anulează</button>
-                    <button type="submit" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm shadow">Trimite Spre Aprobare</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Redeschidere Sarcină (Coordonator / Înlocuitor) -->
-    <div id="reopenModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border-t-4 border-amber-500">
-            <h3 class="text-lg font-bold text-slate-900 mb-2">Redeschidere Sarcină Finalizată</h3>
-            <p class="text-xs text-slate-500 mb-4">Specificați motivul pentru care se revine asupra deciziei de finalizare și ce corecții sunt necesare.</p>
-            <form onsubmit="confirmTaskReopen(event)">
-                <input type="hidden" id="reopenTaskId">
-                <textarea id="reopenReason" required rows="3" placeholder="Ex: Lucrarea necesită completare cu datele de la Serviciul Financiar..." class="w-full p-3 border border-slate-300 rounded-lg text-sm mb-4 focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-                <div class="flex gap-2">
-                    <button type="button" onclick="toggleReopenModal(false)" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-lg font-medium text-sm">Anulează</button>
-                    <button type="submit" class="w-1/2 bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-lg font-medium text-sm shadow">Redeschide Sarcina</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Aprobare Coordonator -->
-    <div id="approveModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <h3 class="text-lg font-bold text-slate-900 mb-2">Aprobare Finalizare Lucrare</h3>
-            <div id="approveModalDetails" class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 mb-4 space-y-1 border"></div>
-            <input type="hidden" id="approveTaskId">
-            <div class="flex gap-2">
-                <button type="button" onclick="handleApproveAction(false)" class="w-1/2 bg-red-100 hover:bg-red-200 text-red-700 py-2.5 rounded-lg font-medium text-sm">Respinge</button>
-                <button type="button" onclick="handleApproveAction(true)" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm shadow">Aprobă & Finalizează</button>
-            </div>
         </div>
     </div>
 
@@ -256,14 +174,13 @@
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-900 text-amber-400 rounded-2xl mb-4 shadow-xl border-2 border-amber-500/30 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent"></div>
                     <div class="flex flex-col items-center justify-center z-10">
                         <i class="fa-solid fa-shield-halved text-2xl mb-0.5 text-amber-400"></i>
                         <span class="text-[10px] font-black tracking-widest text-white leading-none">DPCT</span>
                     </div>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">DPCT - ANP</h1>
-                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene & Structură</p>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene Penitenciare</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
@@ -274,12 +191,6 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Parolă</label>
                     <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" id="rememberMe" class="w-4 h-4 text-blue-900 rounded border-slate-300 focus:ring-blue-500">
-                        <span class="text-xs text-slate-600 font-medium">Păstrează-mă autentificat</span>
-                    </label>
-                </div>
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg shadow-lg transition">
                     Autentificare
                 </button>
@@ -287,12 +198,12 @@
         </div>
     </div>
 
-    <!-- ECRAN PRINCIPAL (DASHBOARD) -->
+    <!-- ECRAN PRINCIPAL (DASHBOARD FIT TO SCREEN) -->
     <div id="appScreen" class="hidden min-h-screen flex flex-col">
-        <header class="bg-slate-900 text-white px-6 py-3.5 flex justify-between items-center shadow-md border-b border-slate-800">
+        <header class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow-md border-b border-slate-800">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 text-amber-400">
-                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                <div class="w-9 h-9 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 text-amber-400">
+                    <i class="fa-solid fa-shield-halved text-base"></i>
                 </div>
                 <div>
                     <h2 class="font-bold leading-tight text-sm tracking-wide">DPCT - Termene</h2>
@@ -300,186 +211,183 @@
                 </div>
             </div>
 
-            <!-- Zona Dreapta: Butoane Admin, Înlocuitor & Ieșire -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2">
                 <div id="substituteBanner" class="hidden">
-                    <button type="button" onclick="toggleSubstituteMode()" id="substituteToggleBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs px-3 py-1.5 rounded-lg transition shadow flex items-center space-x-1.5">
+                    <button type="button" onclick="toggleSubstituteMode()" id="substituteToggleBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg transition shadow flex items-center space-x-1">
                         <i class="fa-solid fa-arrows-rotate"></i>
                         <span id="substituteBtnText">Preia Rol Octavian</span>
                     </button>
                 </div>
-
-                <button type="button" id="adminBtn" onclick="toggleAdminModal(true)" class="hidden text-xs bg-purple-900/80 hover:bg-purple-800 text-purple-200 px-3 py-1.5 rounded-lg border border-purple-700 transition">
-                    <i class="fa-solid fa-user-gear mr-1"></i> Panou Admin
+                <button type="button" id="adminBtn" onclick="toggleAdminModal(true)" class="hidden text-xs bg-purple-900/80 hover:bg-purple-800 text-purple-200 px-2.5 py-1.5 rounded-lg border border-purple-700 transition">
+                    <i class="fa-solid fa-user-gear mr-1"></i> Admin
                 </button>
-                <button type="button" onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Ieșire
+                <button type="button" onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-lg border border-slate-700 transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </header>
 
-        <!-- Banner Notificare Când Modul Înlocuitor Este Activ -->
-        <div id="activeSubstituteNotice" class="hidden bg-amber-500 text-slate-900 px-6 py-2 text-xs font-bold flex justify-between items-center shadow-inner">
-            <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-circle-info text-base"></i>
-                <span id="activeSubstituteText">Mod Înlocuitor Activ: Acționați cu drepturile extinse ale lui Octavian (Șef SPCT)</span>
-            </div>
-            <button type="button" onclick="toggleSubstituteMode()" class="bg-slate-900 text-amber-400 hover:bg-slate-800 px-2.5 py-1 rounded text-[11px] transition">
-                Revin-o la Profilul Tău
-            </button>
-        </div>
-
-        <main class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h1 class="text-2xl font-bold text-slate-900">Tablou de Bord</h1>
-                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="hidden bg-blue-900 hover:bg-blue-800 text-white px-5 py-2.5 rounded-xl font-medium shadow-md flex items-center space-x-2 transition">
+        <main class="flex-1 p-3 sm:p-5 max-w-full mx-auto w-full space-y-4">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h1 class="text-xl font-bold text-slate-900">Tablou de Bord Termene</h1>
+                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="hidden bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5 transition">
                     <i class="fa-solid fa-plus"></i>
-                    <span>Alocare Sarcină Nouă</span>
+                    <span>Alocare Termen Nou</span>
                 </button>
             </div>
 
             <!-- KPI Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <div onclick="setTab('all')" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
-                    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Sarcini Totale</p>
-                    <p id="kpiAll" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <div onclick="setTab('all')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
+                    <p class="text-[11px] text-slate-500 font-semibold uppercase">Termene Totale</p>
+                    <p id="kpiAll" class="text-xl font-extrabold text-slate-900 mt-0.5">0</p>
                 </div>
-                <div onclick="setTab('today')" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
-                    <p class="text-xs text-amber-600 font-semibold uppercase tracking-wider">Termen Azi</p>
-                    <p id="kpiToday" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
+                <div onclick="setTab('overdue')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-red-400 transition bg-red-50/30">
+                    <p class="text-[11px] text-red-600 font-bold uppercase">Depășite</p>
+                    <p id="kpiOverdue" class="text-xl font-extrabold text-red-600 mt-0.5">0</p>
                 </div>
-                <div onclick="setTab('soon')" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
-                    <p class="text-xs text-blue-600 font-semibold uppercase tracking-wider">În Curând</p>
-                    <p id="kpiSoon" class="text-2xl font-extrabold text-blue-600 mt-1">0</p>
+                <div onclick="setTab('today')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
+                    <p class="text-[11px] text-amber-600 font-semibold uppercase">Termen Azi</p>
+                    <p id="kpiToday" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
                 </div>
-                <div onclick="setTab('overdue')" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-red-400 transition">
-                    <p class="text-xs text-red-600 font-semibold uppercase tracking-wider">Depășite</p>
-                    <p id="kpiOverdue" class="text-2xl font-extrabold text-red-600 mt-1">0</p>
+                <div onclick="setTab('soon')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
+                    <p class="text-[11px] text-blue-600 font-semibold uppercase">În Curând</p>
+                    <p id="kpiSoon" class="text-xl font-extrabold text-blue-600 mt-0.5">0</p>
                 </div>
-                <div onclick="setTab('completed')" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 transition">
-                    <p class="text-xs text-emerald-600 font-semibold uppercase tracking-wider">Finalizate</p>
-                    <p id="kpiCompleted" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+                <div onclick="setTab('completed')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 transition">
+                    <p class="text-[11px] text-emerald-600 font-semibold uppercase">Finalizate</p>
+                    <p id="kpiCompleted" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
                 </div>
             </div>
 
-            <!-- Panou Filtrare Avansată -->
-            <div id="filterSection" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-3 items-center">
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider"><i class="fa-solid fa-filter mr-1"></i> Filtrare:</span>
+            <!-- SECTIUNE BUTOANE INTUITIVE UNITĂȚI PENITENCIARE & LUCRĂTORI -->
+            <div id="unitAndWorkerSelector" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 
-                <!-- Filtru Stare/Status Lucrare -->
-                <select id="filterStatus" onchange="renderTasks()" class="px-3 py-1.5 text-xs font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
-                    <option value="ALL">Toate stările (În lucru + Finalizate)</option>
+                <!-- 1. Selector Unitate Penitenciară -->
+                <div>
+                    <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
+                        <i class="fa-solid fa-building-shield text-blue-700 mr-1.5"></i> Selectează Unitatea Penitenciară:
+                    </div>
+                    <div id="unitButtonsContainer" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- 2. Selector Direct Lucrător -->
+                <div class="border-t border-slate-100 pt-2.5">
+                    <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
+                        <i class="fa-solid fa-users text-slate-700 mr-1.5"></i> Selectează Lucrătorul:
+                    </div>
+                    <div id="workerButtonsContainer" class="flex flex-wrap gap-1.5"></div>
+                </div>
+            </div>
+
+            <!-- Panou Filtre Dropdown -->
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-wrap gap-2 items-center text-xs">
+                <span class="font-bold text-slate-500 uppercase"><i class="fa-solid fa-filter mr-1"></i> Filtre:</span>
+                
+                <select id="filterStatus" onchange="renderTasks()" class="px-2.5 py-1 font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+                    <option value="ALL">Toate termenele (Active + Finalizate)</option>
                     <option value="ACTIVE" selected>Doar cele În Lucru / Active</option>
-                    <option value="PENDING">Doar În Așteptare Aprobare</option>
                     <option value="COMPLETED">Doar cele Finalizate</option>
                 </select>
 
-                <!-- Filtru Persoana Atribuită (Lucrător) -->
-                <select id="filterUser" onchange="renderTasks()" class="hidden px-3 py-1.5 text-xs font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
-                    <option value="">Toți executanții</option>
+                <select id="filterUser" onchange="filterByUserDropdown(this.value)" class="px-2.5 py-1 font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+                    <option value="">Toți lucrătorii</option>
                 </select>
 
-                <!-- Filtru Emitent (Trasată de) -->
-                <select id="filterCreator" onchange="renderTasks()" class="px-3 py-1.5 text-xs font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
-                    <option value="">Toți emitenții (Trasată de oricine)</option>
+                <select id="filterCreator" onchange="renderTasks()" class="px-2.5 py-1 font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+                    <option value="">Cine a trasat termenul</option>
                 </select>
 
-                <!-- Filtru Tip Lucrare -->
-                <select id="filterType" onchange="renderTasks()" class="px-3 py-1.5 text-xs font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
+                <select id="filterType" onchange="renderTasks()" class="px-2.5 py-1 font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50">
                     <option value="">Toate tipurile de lucrări</option>
                     <option value="Petiție">Petiție</option>
                     <option value="Adresă">Adresă</option>
                     <option value="Adresă Circulară">Adresă Circulară</option>
                     <option value="Solicitare Telefonică">Solicitare Telefonică</option>
                 </select>
+
+                <button type="button" onclick="resetAllFilters()" class="ml-auto text-[11px] text-blue-700 font-bold hover:underline">
+                    Resetare filtre
+                </button>
             </div>
 
-            <!-- Tabel Sarcini -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+            <!-- TABEL TERMENE (FIT TO SCREEN / CRONOLOGIC STRICT) -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="w-full">
+                    <table class="w-full text-left border-collapse text-xs">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b">
-                                <th class="p-4">Tip / Lucrare</th>
-                                <th class="p-4">Trasată de</th>
-                                <th class="p-4">Atribuit</th>
-                                <th class="p-4">Termen Limită</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4 text-right">Acțiuni</th>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b">
+                                <th class="p-3 w-32">Termen Limită</th>
+                                <th class="p-3">Lucrare / Descriere</th>
+                                <th class="p-3 w-36">Unitate</th>
+                                <th class="p-3 w-32">Lucrător</th>
+                                <th class="p-3 w-32">Trasat De</th>
+                                <th class="p-3 w-28 text-right">Status / Acțiune</th>
                             </tr>
                         </thead>
-                        <tbody id="taskTableBody" class="divide-y divide-slate-100 text-sm">
-                        </tbody>
+                        <tbody id="taskTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
+
         </main>
     </div>
 
     <script>
-        // Utilizatori actualizați cu Administrarea și Noua Echipă a Andreei
+        // Structura utilizatori cu repartizarea pe Unități Penitenciare
         let USERS = JSON.parse(localStorage.getItem('dpct_users')) || [
-            { email: 'admin@dpct.ro', name: 'Admin Sistem', role: 'ADMIN', office: 'Biroul IT', zone: 'ALL' },
-            { email: 'elena@dpct.ro', name: 'Elena', role: 'DIRECTOR', office: 'Direcția DPCT', zone: 'ALL' },
-            { email: 'octavian@dpct.ro', name: 'Octavian', role: 'SEF_SPCT', office: 'Serviciul SPCT', zone: 'SPCT' },
-            { email: 'cristi@dpct.ro', name: 'Cristi', role: 'COORDONATOR', office: 'Biroul Coordonare SPCT 1', zone: 'SPCT_CRISTI' },
-            { email: 'andreea.c@dpct.ro', name: 'Andreea', role: 'COORDONATOR', office: 'Biroul Coordonare SPCT 2', zone: 'SPCT_ANDREEA' },
+            { email: 'admin@dpct.ro', name: 'Admin Sistem', role: 'ADMIN', office: 'Biroul IT', unit: 'ANP Central' },
+            { email: 'elena@dpct.ro', name: 'Elena', role: 'DIRECTOR', office: 'Direcția DPCT', unit: 'ANP Central' },
+            { email: 'octavian@dpct.ro', name: 'Octavian', role: 'SEF_SPCT', office: 'Serviciul SPCT', unit: 'SPCT Central' },
+            { email: 'cristi@dpct.ro', name: 'Cristi', role: 'COORDONATOR', office: 'Cristi - SPCT', unit: 'SPCT Central' },
 
-            // Lucrători Echipa Cristi
-            { email: 'alexandra@dpct.ro', name: 'Alexandra', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'anca@dpct.ro', name: 'Anca', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'bianca@dpct.ro', name: 'Bianca', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'daria@dpct.ro', name: 'Daria', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'darius@dpct.ro', name: 'Darius', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'delia.nicolae@dpct.ro', name: 'Delia Nicolae', role: 'LUCRĂTOR', office: 'CPCT Mărgineni', zone: 'SPCT_CRISTI' },
-            { email: 'ioana@dpct.ro', name: 'Ioana', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'ionut@dpct.ro', name: 'Ionuț', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
-            { email: 'irina@dpct.ro', name: 'Irina', role: 'LUCRĂTOR', office: 'SPCT Central', zone: 'SPCT_CRISTI' },
+            // Echipa Cristi pe Unități Penitenciare
+            { email: 'darius@dpct.ro', name: 'Darius', role: 'LUCRĂTOR', office: 'Penitenciarul Arad', unit: 'Penitenciarul Arad' },
+            { email: 'andreean@dpct.ro', name: 'Andreea N', role: 'LUCRĂTOR', office: 'Penitenciarul Arad', unit: 'Penitenciarul Arad' },
+            { email: 'alexandra@dpct.ro', name: 'Alexandra', role: 'LUCRĂTOR', office: 'Penitenciarul Arad', unit: 'Penitenciarul Arad' },
 
-            // Lucrători Noi Echipa Andreea
-            { email: 'alex@dpct.ro', name: 'Alex', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'ema@dpct.ro', name: 'Ema', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'iulian@dpct.ro', name: 'Iulian', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'biancan@dpct.ro', name: 'Bianca N', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'elenat@dpct.ro', name: 'Elena T', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'sergiu@dpct.ro', name: 'Sergiu', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'dan@dpct.ro', name: 'Dan', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'silviu@dpct.ro', name: 'Silviu', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'mihai@dpct.ro', name: 'Mihai', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' },
-            { email: 'george@dpct.ro', name: 'George', role: 'LUCRĂTOR', office: 'SPCT Sector 2', zone: 'SPCT_ANDREEA' }
+            { email: 'anca@dpct.ro', name: 'Anca', role: 'LUCRĂTOR', office: 'Penitenciarul Timișoara', unit: 'Penitenciarul Timișoara' },
+            { email: 'ionut@dpct.ro', name: 'Ionuț', role: 'LUCRĂTOR', office: 'Penitenciarul Timișoara', unit: 'Penitenciarul Timișoara' },
+            { email: 'simona@dpct.ro', name: 'Simona', role: 'LUCRĂTOR', office: 'Timișoara & CE Buziaș', unit: 'Penitenciarul Timișoara', multiUnits: ['Penitenciarul Timișoara', 'CE Buziaș'] },
+
+            { email: 'bianca@dpct.ro', name: 'Bianca', role: 'LUCRĂTOR', office: 'Penitenciarul Oradea', unit: 'Penitenciarul Oradea' },
+
+            { email: 'irina@dpct.ro', name: 'Irina', role: 'LUCRĂTOR', office: 'Penitenciarul Slobozia', unit: 'Penitenciarul Slobozia' },
+            { email: 'stefanm@dpct.ro', name: 'Ștefan M', role: 'LUCRĂTOR', office: 'Penitenciarul Slobozia', unit: 'Penitenciarul Slobozia' },
+
+            { email: 'laurentiuc@dpct.ro', name: 'Laurențiu C', role: 'LUCRĂTOR', office: 'Penitenciarul Ploiești', unit: 'Penitenciarul Ploiești' },
+            { email: 'ioana@dpct.ro', name: 'Ioana', role: 'LUCRĂTOR', office: 'Penitenciarul Ploiești', unit: 'Penitenciarul Ploiești' },
+
+            { email: 'delia.nicolae@dpct.ro', name: 'Delia Nicolae', role: 'LUCRĂTOR', office: 'Penitenciarul Mărgineni', unit: 'Penitenciarul Mărgineni' },
+            { email: 'daria@dpct.ro', name: 'Daria', role: 'LUCRĂTOR', office: 'Penitenciarul Mărgineni', unit: 'Penitenciarul Mărgineni' },
+
+            { email: 'stefani@dpct.ro', name: 'Ștefan I', role: 'LUCRĂTOR', office: 'Penitenciarul Târgșor', unit: 'Penitenciarul Târgșor' },
+            { email: 'iustina@dpct.ro', name: 'Iustina', role: 'LUCRĂTOR', office: 'Penitenciarul Târgșor', unit: 'Penitenciarul Târgșor' }
         ];
 
-        // Delegări active în sistem
         let DELEGATIONS = JSON.parse(localStorage.getItem('dpct_delegations')) || [
             { absent: 'octavian@dpct.ro', substitute: 'cristi@dpct.ro', active: true }
         ];
 
         let currentUser = null;
-        let effectiveUser = null; // Utilizatorul ale cărui drepturi sunt preluate în mod înlocuitor
+        let effectiveUser = null;
         let isSubstituteActive = false;
         let activeTab = 'all';
 
+        let selectedUnitFilter = '';
+        let selectedWorkerFilter = '';
+
+        // Sarcini demonstrative ordonate cronologic
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
-            { id: 1, type: 'Petiție', title: 'Petiție recalculare timp lucru', desc: 'Analiză dosar.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI' },
-            { id: 2, type: 'Adresă', title: 'Adresă Ministerul Justiției', desc: 'Redactare răspuns.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-25', status: 'PENDING_APPROVAL', zone: 'SPCT_CRISTI', completionNotes: 'Proiect nr. 4512/2026.' },
-            { id: 3, type: 'Adresă Circulară', title: 'Instructaj SSM', desc: 'Transmitere norme.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'elena@dpct.ro', dueDate: '2026-08-20', status: 'COMPLETED', zone: 'SPCT_CRISTI', completionNotes: 'Circulara nr. 12/DPCT.' },
-            
-            // Sarcini Echipa Andreea
-            { id: 4, type: 'Petiție', title: 'Evaluare inițială NTS', desc: 'Verificare riscuri și necesități.', assignedTo: 'alex@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-27', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 5, type: 'Adresă', title: 'Ședințe consiliere psihologică', desc: 'Derulare program de integrare.', assignedTo: 'ema@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-28', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 6, type: 'Solicitare Telefonică', title: 'Evidență pachete E3', desc: 'Verificare situație cumpărături.', assignedTo: 'iulian@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-25', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 7, type: 'Adresă Circulară', title: 'Planificare activități educative', desc: 'Organizare grupuri de suport.', assignedTo: 'biancan@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-29', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 8, type: 'Petiție', title: 'Recomandări comisie liberare', desc: 'Întocmire raport de evaluare.', assignedTo: 'elenat@dpct.ro', createdBy: 'elena@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 9, type: 'Adresă', title: 'Perfectare transfer administrativ', desc: 'Transmitere dosar medical.', assignedTo: 'sergiu@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 10, type: 'Solicitare Telefonică', title: 'Raport incident disciplinar', desc: 'Verificare note explicative.', assignedTo: 'dan@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-24', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 11, type: 'Petiție', title: 'Includere programe educative', desc: 'Centralizare opțiuni cursuri.', assignedTo: 'silviu@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-31', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 12, type: 'Adresă', title: 'Asistență socială legătură familie', desc: 'Ancheta socială la domiciliu.', assignedTo: 'mihai@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-28', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' },
-            { id: 13, type: 'Petiție', title: 'Verificare și înregistrare petiții', desc: 'Răspuns la solicitarea nr. 998.', assignedTo: 'george@dpct.ro', createdBy: 'andreea.c@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_ANDREEA' }
+            { id: 1, type: 'Petiție', title: 'Verificare sesizare condiții', desc: 'Analiză dosar.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-20', status: 'IN_PROGRESS', unit: 'Penitenciarul Mărgineni' },
+            { id: 2, type: 'Adresă', title: 'Adresă completare documente', desc: 'Solicitare clarificări.', assignedTo: 'darius@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-24', status: 'IN_PROGRESS', unit: 'Penitenciarul Arad' },
+            { id: 3, type: 'Solicitare Telefonică', title: 'Verificare program vizite', desc: 'Informații regim.', assignedTo: 'simona@dpct.ro', createdBy: 'octavian@dpct.ro', dueDate: '2026-08-25', status: 'IN_PROGRESS', unit: 'CE Buziaș' },
+            { id: 4, type: 'Adresă Circulară', title: 'Transmitere norme interne', desc: 'Instructaj SSM.', assignedTo: 'anca@dpct.ro', createdBy: 'elena@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', unit: 'Penitenciarul Timișoara' },
+            { id: 5, type: 'Petiție', title: 'Petiție regim detenție', desc: 'Verificare spații.', assignedTo: 'stefani@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-28', status: 'IN_PROGRESS', unit: 'Penitenciarul Târgșor' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            USERS.sort((a, b) => a.name.localeCompare(b.name, 'ro'));
-
             const savedUserEmail = localStorage.getItem('dpct_logged_user');
             if (savedUserEmail) {
                 const user = USERS.find(u => u.email === savedUserEmail);
@@ -491,8 +399,6 @@
             }
         });
 
-        function saveUsers() { localStorage.setItem('dpct_users', JSON.stringify(USERS)); }
-        function saveDelegations() { localStorage.setItem('dpct_delegations', JSON.stringify(DELEGATIONS)); }
         function saveTasks() { localStorage.setItem('dpct_tasks', JSON.stringify(tasks)); }
 
         function handleLogin(e) {
@@ -503,204 +409,185 @@
             const user = USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
             if (!user) { alert('Contul nu există.'); return; }
 
-            const storedPwd = localStorage.getItem('pwd_' + user.email) || '1234@';
-            if (pwd !== storedPwd) { alert('Parolă incorectă.'); return; }
-
             currentUser = user;
             effectiveUser = user;
-            isSubstituteActive = false;
-
-            if (document.getElementById('rememberMe').checked) {
-                localStorage.setItem('dpct_logged_user', user.email);
-            } else {
-                localStorage.removeItem('dpct_logged_user');
-            }
-
-            if (storedPwd === '1234@') {
-                document.getElementById('pwdModal').classList.remove('hidden');
-            } else {
-                initDashboard();
-            }
-        }
-
-        function handlePasswordChange(e) {
-            e.preventDefault();
-            const newP = document.getElementById('newPwd').value;
-            const confP = document.getElementById('confirmPwd').value;
-            if (newP !== confP) { alert('Parolele nu se potrivesc!'); return; }
-
-            localStorage.setItem('pwd_' + currentUser.email, newP);
-            document.getElementById('pwdModal').classList.add('hidden');
+            localStorage.setItem('dpct_logged_user', user.email);
             initDashboard();
         }
 
         function handleLogout() {
             currentUser = null;
             effectiveUser = null;
-            isSubstituteActive = false;
             localStorage.removeItem('dpct_logged_user');
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
-        }
-
-        function toggleSubstituteMode() {
-            const delegation = DELEGATIONS.find(d => d.substitute === currentUser.email && d.active);
-            if (!delegation) return;
-
-            const absentUser = USERS.find(u => u.email === delegation.absent);
-            if (!absentUser) return;
-
-            isSubstituteActive = !isSubstituteActive;
-
-            if (isSubstituteActive) {
-                effectiveUser = absentUser;
-                document.getElementById('substituteBtnText').innerText = `Profil Curent: ${absentUser.name}`;
-                document.getElementById('activeSubstituteNotice').classList.remove('hidden');
-                document.getElementById('activeSubstituteText').innerText = `Mod Înlocuitor Activ: Acționați cu drepturile extinse ale lui ${absentUser.name} (${absentUser.office})`;
-            } else {
-                effectiveUser = currentUser;
-                document.getElementById('substituteBtnText').innerText = `Preia Rol ${absentUser.name}`;
-                document.getElementById('activeSubstituteNotice').classList.add('hidden');
-            }
-
-            initDashboardView();
         }
 
         function initDashboard() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('hidden');
 
-            // Verificare dacă utilizatorul curent are o delegare activă
             const delegation = DELEGATIONS.find(d => d.substitute === currentUser.email && d.active);
             const banner = document.getElementById('substituteBanner');
-            
-            if (delegation) {
-                const absentUser = USERS.find(u => u.email === delegation.absent);
-                document.getElementById('substituteBtnText').innerText = `Preia Rol ${absentUser ? absentUser.name : 'Șef'}`;
-                banner.classList.remove('hidden');
-            } else {
-                banner.classList.add('hidden');
-            }
+            if (delegation) banner.classList.remove('hidden');
+            else banner.classList.add('hidden');
 
-            // Buton Admin vizibil doar pentru ADMIN
-            if (currentUser.role === 'ADMIN') {
-                document.getElementById('adminBtn').classList.remove('hidden');
-            } else {
-                document.getElementById('adminBtn').classList.add('hidden');
-            }
+            if (currentUser.role === 'ADMIN') document.getElementById('adminBtn').classList.remove('hidden');
+            else document.getElementById('adminBtn').classList.add('hidden');
 
             initDashboardView();
         }
 
         function initDashboardView() {
             const userForView = effectiveUser || currentUser;
-            document.getElementById('userDisplay').innerText = `${userForView.name} — ${userForView.office} ${isSubstituteActive ? '(Mod Înlocuitor)' : ''}`;
+            document.getElementById('userDisplay').innerText = `${userForView.name} — ${userForView.office}`;
 
             const isBoss = ['ADMIN', 'DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(userForView.role);
+            if (isBoss) document.getElementById('newTaskBtn').classList.remove('hidden');
+            else document.getElementById('newTaskBtn').classList.add('hidden');
 
-            if (isBoss) {
-                document.getElementById('newTaskBtn').classList.remove('hidden');
-                document.getElementById('filterUser').classList.remove('hidden');
-            } else {
-                document.getElementById('newTaskBtn').classList.add('hidden');
-                document.getElementById('filterUser').classList.add('hidden');
-            }
-
+            renderUnitAndWorkerButtons();
             populateDropdowns();
             renderTasks();
-            checkUpcomingDeadlines();
         }
 
-        function checkUpcomingDeadlines() {
-            const today = new Date();
-            const warningList = document.getElementById('dueWarningList');
-            warningList.innerHTML = '';
-            let hasWarnings = false;
+        // Generare Butoane Intuitive pentru Unități și Lucrători
+        function renderUnitAndWorkerButtons() {
+            const unitContainer = document.getElementById('unitButtonsContainer');
+            const workerContainer = document.getElementById('workerButtonsContainer');
+            unitContainer.innerHTML = '';
+            workerContainer.innerHTML = '';
 
-            tasks.forEach(t => {
-                if (t.assignedTo === currentUser.email && t.status === 'IN_PROGRESS') {
-                    const taskDate = new Date(t.dueDate);
-                    const diffDays = Math.ceil((taskDate - today) / (1000 * 60 * 60 * 24));
+            const units = [
+                'Penitenciarul Arad',
+                'Penitenciarul Timișoara',
+                'Penitenciarul Oradea',
+                'CE Buziaș',
+                'Penitenciarul Slobozia',
+                'Penitenciarul Ploiești',
+                'Penitenciarul Mărgineni',
+                'Penitenciarul Târgșor'
+            ];
 
-                    if (diffDays >= 0 && diffDays <= 2) {
-                        hasWarnings = true;
-                        const item = document.createElement('div');
-                        item.className = "p-2 bg-amber-50 border border-amber-200 rounded text-slate-800 text-xs font-medium";
-                        item.innerHTML = `📌 <strong>[${t.type}] ${t.title}</strong> — <span class="text-amber-700 font-bold">Termen: ${t.dueDate} (${diffDays === 0 ? 'Azi' : diffDays + ' zile rămase'})</span>`;
-                        warningList.appendChild(item);
-                    }
-                }
+            // Buton "Toate Unitățile"
+            const allBtn = document.createElement('button');
+            allBtn.type = 'button';
+            allBtn.onclick = () => filterByUnit('');
+            allBtn.className = `px-2.5 py-1 rounded-lg text-xs font-bold transition border ${selectedUnitFilter === '' ? 'bg-blue-900 text-white border-blue-900 shadow' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200'}`;
+            allBtn.innerText = 'Toate Unitățile';
+            unitContainer.appendChild(allBtn);
+
+            units.forEach(u => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => filterByUnit(u);
+                btn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold transition border ${selectedUnitFilter === u ? 'bg-blue-700 text-white border-blue-700 shadow' : 'bg-slate-50 text-slate-700 hover:bg-slate-200 border-slate-200'}`;
+                btn.innerText = u.replace('Penitenciarul ', 'P. ');
+                unitContainer.appendChild(btn);
             });
 
-            if (hasWarnings) {
-                document.getElementById('dueWarningModal').classList.remove('hidden');
-            }
+            // Lucrători subordonați
+            const workers = USERS.filter(u => u.role === 'LUCRĂTOR');
+
+            // Buton "Toți Lucrătorii"
+            const allWBtn = document.createElement('button');
+            allWBtn.type = 'button';
+            allWBtn.onclick = () => filterByWorker('');
+            allWBtn.className = `px-2.5 py-1 rounded-lg text-xs font-bold transition border ${selectedWorkerFilter === '' ? 'bg-slate-800 text-white border-slate-800 shadow' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200'}`;
+            allWBtn.innerText = 'Toți Lucrătorii';
+            workerContainer.appendChild(allWBtn);
+
+            workers.forEach(w => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => filterByWorker(w.email);
+                btn.className = `px-2.5 py-1 rounded-lg text-xs font-medium transition border ${selectedWorkerFilter === w.email ? 'bg-amber-500 text-slate-900 font-bold border-amber-500 shadow' : 'bg-slate-50 text-slate-700 hover:bg-slate-200 border-slate-200'}`;
+                btn.innerText = w.name;
+                workerContainer.appendChild(btn);
+            });
+        }
+
+        function filterByUnit(unitName) {
+            selectedUnitFilter = unitName;
+            selectedWorkerFilter = '';
+            document.getElementById('filterUser').value = '';
+            renderUnitAndWorkerButtons();
+            renderTasks();
+        }
+
+        function filterByWorker(workerEmail) {
+            selectedWorkerFilter = workerEmail;
+            document.getElementById('filterUser').value = workerEmail;
+            renderUnitAndWorkerButtons();
+            renderTasks();
+        }
+
+        function filterByUserDropdown(val) {
+            selectedWorkerFilter = val;
+            renderUnitAndWorkerButtons();
+            renderTasks();
+        }
+
+        function resetAllFilters() {
+            selectedUnitFilter = '';
+            selectedWorkerFilter = '';
+            document.getElementById('filterStatus').value = 'ACTIVE';
+            document.getElementById('filterUser').value = '';
+            document.getElementById('filterCreator').value = '';
+            document.getElementById('filterType').value = '';
+            activeTab = 'all';
+            renderUnitAndWorkerButtons();
+            renderTasks();
         }
 
         function populateDropdowns() {
-            const activeUser = effectiveUser || currentUser;
             const assigneeSelect = document.getElementById('taskAssignee');
             const filterUserSelect = document.getElementById('filterUser');
             const filterCreatorSelect = document.getElementById('filterCreator');
 
             assigneeSelect.innerHTML = '';
-            filterUserSelect.innerHTML = '<option value="">Toți executanții</option>';
-            filterCreatorSelect.innerHTML = '<option value="">Toți emitenții (Trasată de oricine)</option>';
+            filterUserSelect.innerHTML = '<option value="">Toți lucrătorii</option>';
+            filterCreatorSelect.innerHTML = '<option value="">Cine a trasat termenul</option>';
 
-            const sortedUsers = [...USERS].sort((a, b) => a.name.localeCompare(b.name, 'ro'));
-
-            sortedUsers.forEach(u => {
+            USERS.forEach(u => {
                 const optCreator = document.createElement('option');
                 optCreator.value = u.email;
                 optCreator.textContent = `${u.name} (${u.role})`;
                 filterCreatorSelect.appendChild(optCreator);
-            });
 
-            let visibleUsers = [];
-            if (['ADMIN', 'DIRECTOR'].includes(activeUser.role)) visibleUsers = sortedUsers;
-            else if (activeUser.role === 'SEF_SPCT') visibleUsers = sortedUsers.filter(u => u.zone.startsWith('SPCT'));
-            else if (activeUser.role === 'COORDONATOR') visibleUsers = sortedUsers.filter(u => u.zone === activeUser.zone);
-            else visibleUsers = [activeUser];
+                if (u.role === 'LUCRĂTOR') {
+                    const opt1 = document.createElement('option');
+                    opt1.value = u.email;
+                    opt1.textContent = `${u.name} (${u.unit})`;
+                    assigneeSelect.appendChild(opt1);
 
-            visibleUsers.forEach(u => {
-                const opt1 = document.createElement('option');
-                opt1.value = u.email;
-                opt1.textContent = `${u.name} (${u.office})`;
-                assigneeSelect.appendChild(opt1);
-
-                const opt2 = document.createElement('option');
-                opt2.value = u.email;
-                opt2.textContent = u.name;
-                filterUserSelect.appendChild(opt2);
-            });
-        }
-
-        function getVisibleTasksForUser() {
-            const activeUser = effectiveUser || currentUser;
-            return tasks.filter(t => {
-                if (['ADMIN', 'DIRECTOR'].includes(activeUser.role)) return true;
-                if (activeUser.role === 'SEF_SPCT' && t.zone.startsWith('SPCT')) return true;
-                if (activeUser.role === 'COORDONATOR' && t.zone === activeUser.zone) return true;
-                return t.assignedTo === activeUser.email;
+                    const opt2 = document.createElement('option');
+                    opt2.value = u.email;
+                    opt2.textContent = u.name;
+                    filterUserSelect.appendChild(opt2);
+                }
             });
         }
 
         function getFilteredTasks() {
             const today = new Date().toISOString().split('T')[0];
-            const visibleTasks = getVisibleTasksForUser();
-
-            const selectedUser = document.getElementById('filterUser').value;
+            const selectedStatus = document.getElementById('filterStatus').value;
             const selectedCreator = document.getElementById('filterCreator').value;
             const selectedType = document.getElementById('filterType').value;
-            const selectedStatus = document.getElementById('filterStatus').value;
 
-            return visibleTasks.filter(t => {
-                if (selectedUser && t.assignedTo !== selectedUser) return false;
+            return tasks.filter(t => {
+                if (selectedUnitFilter) {
+                    const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                    const matchesUnit = t.unit === selectedUnitFilter || 
+                                        (assignedUser && assignedUser.multiUnits && assignedUser.multiUnits.includes(selectedUnitFilter));
+                    if (!matchesUnit) return false;
+                }
+
+                if (selectedWorkerFilter && t.assignedTo !== selectedWorkerFilter) return false;
                 if (selectedCreator && t.createdBy !== selectedCreator) return false;
                 if (selectedType && t.type !== selectedType) return false;
 
                 if (selectedStatus === 'ACTIVE' && t.status === 'COMPLETED') return false;
-                if (selectedStatus === 'PENDING' && t.status !== 'PENDING_APPROVAL') return false;
                 if (selectedStatus === 'COMPLETED' && t.status !== 'COMPLETED') return false;
 
                 if (activeTab === 'today') return t.dueDate === today && t.status !== 'COMPLETED';
@@ -714,108 +601,87 @@
 
         function renderTasks() {
             let filtered = getFilteredTasks();
-            const visibleTasks = getVisibleTasksForUser();
             const tbody = document.getElementById('taskTableBody');
             tbody.innerHTML = '';
 
             const todayStr = new Date().toISOString().split('T')[0];
-            const todayObj = new Date();
 
             let countToday = 0, countSoon = 0, countOverdue = 0, countCompleted = 0;
-            
-            visibleTasks.forEach(t => {
-                if (t.status === 'COMPLETED') {
-                    countCompleted++;
-                } else {
+            tasks.forEach(t => {
+                if (t.status === 'COMPLETED') countCompleted++;
+                else {
                     if (t.dueDate === todayStr) countToday++;
                     else if (t.dueDate > todayStr) countSoon++;
                     else if (t.dueDate < todayStr) countOverdue++;
                 }
             });
 
-            document.getElementById('kpiAll').innerText = visibleTasks.length;
+            document.getElementById('kpiAll').innerText = tasks.length;
             document.getElementById('kpiToday').innerText = countToday;
             document.getElementById('kpiSoon').innerText = countSoon;
             document.getElementById('kpiOverdue').innerText = countOverdue;
             document.getElementById('kpiCompleted').innerText = countCompleted;
 
+            // CRONOLOGIC STRICT: Cel mai vechi termen depășit primul (ex: 20.08, urmat de 24.08, etc)
             filtered.sort((a, b) => {
-                const statusOrder = { 'IN_PROGRESS': 1, 'PENDING_APPROVAL': 2, 'COMPLETED': 3 };
-                if (statusOrder[a.status] !== statusOrder[b.status]) {
-                    return statusOrder[a.status] - statusOrder[b.status];
-                }
+                if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1;
+                if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1;
                 return new Date(a.dueDate) - new Date(b.dueDate);
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există sarcini care să corespundă filtrelor selectate.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există termene care să corespundă selecției.</td></tr>`;
                 return;
             }
-
-            const activeUser = effectiveUser || currentUser;
-            const isBoss = ['ADMIN', 'DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(activeUser.role);
 
             filtered.forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
                 const creatorUser = USERS.find(u => u.email === t.createdBy);
                 
-                const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
-                const taskDate = new Date(t.dueDate);
-                const diffDays = Math.ceil((taskDate - todayObj) / (1000 * 60 * 60 * 24));
-                const isTwoDaysLeft = diffDays >= 0 && diffDays <= 2 && t.status === 'IN_PROGRESS';
+                const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED';
+                const isToday = t.dueDate === todayStr && t.status !== 'COMPLETED';
 
-                let statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">În lucru</span>`;
-                if (t.status === 'PENDING_APPROVAL') {
-                    statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">În așteptare aprobare</span>`;
-                } else if (t.status === 'COMPLETED') {
-                    statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">Finalizată</span>`;
+                // Formatare dată românească (DD.MM.YYYY)
+                const dateParts = t.dueDate.split('-');
+                const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`;
+
+                let dateBadgeClass = "bg-slate-100 text-slate-800 border-slate-300";
+                if (t.status === 'COMPLETED') {
+                    dateBadgeClass = "bg-emerald-50 text-emerald-800 border-emerald-200";
                 } else if (isOverdue) {
-                    statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Depășită</span>`;
+                    dateBadgeClass = "bg-red-100 text-red-900 border-red-300 font-extrabold animate-pulse";
+                } else if (isToday) {
+                    dateBadgeClass = "bg-amber-100 text-amber-900 border-amber-300 font-extrabold";
                 }
 
-                let actionBtn = '';
-                if (t.status === 'PENDING_APPROVAL') {
-                    if (isBoss) {
-                        actionBtn = `<button type="button" onclick="openApproveModal(${t.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
-                            <i class="fa-solid fa-clock-rotate-left mr-1"></i> Revizuiește
-                        </button>`;
-                    } else {
-                        actionBtn = `<span class="text-xs text-amber-600 italic font-medium">Spre aprobare</span>`;
-                    }
-                } else if (t.status === 'IN_PROGRESS') {
-                    actionBtn = `<button type="button" onclick="openCompleteModal(${t.id})" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 transition">
-                        Bifează Finalizare
-                    </button>`;
-                } else if (t.status === 'COMPLETED') {
-                    if (isBoss) {
-                        actionBtn = `<button type="button" onclick="openReopenModal(${t.id})" class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-800 font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition">
-                            <i class="fa-solid fa-rotate-left mr-1"></i> Redeschide
-                        </button>`;
-                    } else {
-                        actionBtn = `<div class="text-xs text-emerald-600 font-semibold"><i class="fa-solid fa-check mr-1"></i> Finalizat</div>`;
-                    }
-                }
+                let statusText = `<span class="text-blue-700 font-bold">În lucru</span>`;
+                if (t.status === 'COMPLETED') statusText = `<span class="text-emerald-700 font-bold"><i class="fa-solid fa-check mr-1"></i> Finalizat</span>`;
 
                 const tr = document.createElement('tr');
-                tr.className = `hover:bg-slate-50 transition cursor-pointer ${t.status === 'COMPLETED' ? 'bg-slate-50/50 opacity-80' : ''}`;
+                tr.className = `hover:bg-slate-50 transition cursor-pointer ${t.status === 'COMPLETED' ? 'bg-slate-50/50 opacity-75' : ''}`;
                 tr.innerHTML = `
-                    <td class="p-4" onclick="openDetailModal(${t.id})">
-                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">${t.type || 'Sarcina'}</span>
-                        <div class="font-bold text-slate-900 mt-1 hover:text-blue-600">${t.title}</div>
-                        <div class="text-xs text-slate-500 line-clamp-1">${t.desc || '-'}</div>
+                    <td class="p-3 whitespace-nowrap" onclick="openDetailModal(${t.id})">
+                        <span class="px-2.5 py-1 rounded border text-xs font-mono inline-block ${dateBadgeClass}">
+                            ${formattedDate} ${isOverdue ? '⚠️' : (isToday ? '📌' : '')}
+                        </span>
                     </td>
-                    <td class="p-4 font-medium text-slate-600 text-xs" onclick="openDetailModal(${t.id})">
-                        <i class="fa-solid fa-user-pen mr-1 text-slate-400"></i> ${creatorUser ? creatorUser.name : t.createdBy}
+                    <td class="p-3" onclick="openDetailModal(${t.id})">
+                        <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border">${t.type || 'Sarcina'}</span>
+                        <div class="font-bold text-slate-900 mt-0.5">${t.title}</div>
+                        <div class="text-[11px] text-slate-500 line-clamp-1">${t.desc || '-'}</div>
                     </td>
-                    <td class="p-4 font-medium text-slate-700 text-xs" onclick="openDetailModal(${t.id})">
+                    <td class="p-3 font-semibold text-slate-700 whitespace-nowrap" onclick="openDetailModal(${t.id})">
+                        <i class="fa-solid fa-building-shield mr-1 text-slate-400"></i> ${t.unit || (assignedUser ? assignedUser.unit : '-')}
+                    </td>
+                    <td class="p-3 font-semibold text-slate-800 whitespace-nowrap" onclick="openDetailModal(${t.id})">
                         <i class="fa-solid fa-user-check mr-1 text-slate-400"></i> ${assignedUser ? assignedUser.name : t.assignedTo}
                     </td>
-                    <td class="p-4 font-mono text-xs" onclick="openDetailModal(${t.id})">
-                        <span class="${isOverdue ? 'text-red-600 font-bold' : (isTwoDaysLeft ? 'text-amber-600 font-bold' : 'text-slate-600')}">${t.dueDate}</span>
-                        ${isTwoDaysLeft ? `<br><span class="inline-block mt-1 px-2 py-0.5 text-[10px] bg-amber-100 text-amber-800 font-semibold rounded">⏳ Termen în 2 zile</span>` : ''}
+                    <td class="p-3 text-slate-600 whitespace-nowrap" onclick="openDetailModal(${t.id})">
+                        ${creatorUser ? creatorUser.name : t.createdBy}
                     </td>
-                    <td class="p-4" onclick="openDetailModal(${t.id})">${statusBadge}</td>
-                    <td class="p-4 text-right">${actionBtn}</td>
+                    <td class="p-3 text-right whitespace-nowrap">
+                        ${statusText}
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -824,90 +690,7 @@
         function setTab(tab) { activeTab = tab; renderTasks(); }
         function toggleTaskModal(show) { document.getElementById('taskModal').classList.toggle('hidden', !show); }
         function toggleDetailModal(show) { document.getElementById('detailModal').classList.toggle('hidden', !show); }
-
-        function toggleAdminModal(show) {
-            if (show) renderAdminPanel();
-            document.getElementById('adminModal').classList.toggle('hidden', !show);
-        }
-
-        function renderAdminPanel() {
-            const delAbsent = document.getElementById('delAbsent');
-            const delSubstitute = document.getElementById('delSubstitute');
-            delAbsent.innerHTML = '';
-            delSubstitute.innerHTML = '';
-
-            const bossUsers = USERS.filter(u => ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(u.role));
-            bossUsers.forEach(u => {
-                const opt = document.createElement('option');
-                opt.value = u.email;
-                opt.textContent = `${u.name} (${u.role})`;
-                delAbsent.appendChild(opt);
-            });
-
-            USERS.forEach(u => {
-                const opt = document.createElement('option');
-                opt.value = u.email;
-                opt.textContent = `${u.name} (${u.role})`;
-                delSubstitute.appendChild(opt);
-            });
-
-            const tbody = document.getElementById('adminUsersTable');
-            tbody.innerHTML = '';
-
-            USERS.forEach(u => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50";
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-800">${u.name}<br><span class="text-[10px] font-normal text-slate-400">${u.email}</span></td>
-                    <td class="p-3 text-slate-600">${u.office}</td>
-                    <td class="p-3">
-                        <select onchange="updateUserRole('${u.email}', this.value)" class="px-2 py-1 border rounded bg-white text-xs font-semibold">
-                            <option value="LUCRĂTOR" ${u.role === 'LUCRĂTOR' ? 'selected' : ''}>LUCRĂTOR</option>
-                            <option value="COORDONATOR" ${u.role === 'COORDONATOR' ? 'selected' : ''}>COORDONATOR</option>
-                            <option value="SEF_SPCT" ${u.role === 'SEF_SPCT' ? 'selected' : ''}>SEF_SPCT</option>
-                            <option value="DIRECTOR" ${u.role === 'DIRECTOR' ? 'selected' : ''}>DIRECTOR</option>
-                            <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
-                        </select>
-                    </td>
-                    <td class="p-3 text-slate-600 font-mono">${u.zone}</td>
-                    <td class="p-3 text-right">
-                        <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded border border-purple-200">Activ</span>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateUserRole(email, newRole) {
-            const user = USERS.find(u => u.email === email);
-            if (user) {
-                user.role = newRole;
-                saveUsers();
-                alert(`Rolul lui ${user.name} a fost modificat în ${newRole}.`);
-                initDashboardView();
-            }
-        }
-
-        function handleSaveDelegation(e) {
-            e.preventDefault();
-            const absent = document.getElementById('delAbsent').value;
-            const substitute = document.getElementById('delSubstitute').value;
-
-            if (absent === substitute) {
-                alert('Titularul și înlocuitorul nu pot fi aceeași persoană!');
-                return;
-            }
-
-            DELEGATIONS.push({ absent, substitute, active: true });
-            saveDelegations();
-
-            const absentUser = USERS.find(u => u.email === absent);
-            const subUser = USERS.find(u => u.email === substitute);
-
-            alert(`Delegare salvată! ${subUser.name} îl va putea înlocui pe ${absentUser.name}.`);
-            toggleAdminModal(false);
-            initDashboard();
-        }
+        function toggleAdminModal(show) { document.getElementById('adminModal').classList.toggle('hidden', !show); }
 
         function openDetailModal(id) {
             const task = tasks.find(t => t.id === id);
@@ -919,40 +702,10 @@
             document.getElementById('detailTypeBadge').innerText = task.type || 'SARCINĂ';
             document.getElementById('detailTitle').innerText = task.title;
             document.getElementById('detailCreatedBy').innerText = creatorUser ? `${creatorUser.name} (${creatorUser.role})` : task.createdBy;
-            document.getElementById('detailAssignedTo').innerText = assignedUser ? `${assignedUser.name} (${assignedUser.office})` : task.assignedTo;
+            document.getElementById('detailAssignedTo').innerText = assignedUser ? `${assignedUser.name} (${assignedUser.unit})` : task.assignedTo;
             document.getElementById('detailDueDate').innerText = task.dueDate;
             document.getElementById('detailDesc').innerText = task.desc || 'Fără instrucțiuni suplimentare.';
-
-            let statusTxt = 'În lucru';
-            let statusClass = 'text-blue-600';
-
-            if (task.status === 'PENDING_APPROVAL') {
-                statusTxt = 'În așteptare aprobare';
-                statusClass = 'text-amber-600';
-            } else if (task.status === 'COMPLETED') {
-                statusTxt = 'Finalizată';
-                statusClass = 'text-emerald-600';
-            }
-            
-            const detailStatusEl = document.getElementById('detailStatus');
-            detailStatusEl.innerText = statusTxt;
-            detailStatusEl.className = `font-bold ${statusClass}`;
-
-            const notesContainer = document.getElementById('detailNotesContainer');
-            if (task.completionNotes) {
-                document.getElementById('detailNotes').innerText = task.completionNotes;
-                notesContainer.classList.remove('hidden');
-            } else {
-                notesContainer.classList.add('hidden');
-            }
-
-            const reopenContainer = document.getElementById('detailReopenContainer');
-            if (task.reopenNotes) {
-                document.getElementById('detailReopenNotes').innerText = task.reopenNotes;
-                reopenContainer.classList.remove('hidden');
-            } else {
-                reopenContainer.classList.add('hidden');
-            }
+            document.getElementById('detailStatus').innerText = task.status === 'COMPLETED' ? 'Finalizată' : 'În lucru';
 
             toggleDetailModal(true);
         }
@@ -966,7 +719,6 @@
             const dueDate = document.getElementById('taskDueDate').value;
 
             const targetUser = USERS.find(u => u.email === assignedTo);
-            const activeUser = effectiveUser || currentUser;
 
             const newTask = {
                 id: Date.now(),
@@ -974,110 +726,18 @@
                 title,
                 desc,
                 assignedTo,
-                createdBy: activeUser.email,
+                createdBy: currentUser.email,
                 dueDate,
                 status: 'IN_PROGRESS',
-                zone: targetUser ? targetUser.zone : 'SPCT_CRISTI',
-                completionNotes: '',
-                reopenNotes: ''
+                unit: targetUser ? targetUser.unit : 'Penitenciarul Arad'
             };
 
             tasks.push(newTask);
             saveTasks();
             toggleTaskModal(false);
-            
-            alert(`Sarcina a fost alocată cu succes către ${targetUser ? targetUser.name : assignedTo}!`);
+            alert('Termenul a fost alocat cu succes!');
             document.getElementById('taskForm').reset();
             renderTasks();
-        }
-
-        function toggleCompleteModal(show) { document.getElementById('completeModal').classList.toggle('hidden', !show); }
-        function openCompleteModal(id) {
-            document.getElementById('completeTaskId').value = id;
-            document.getElementById('completionNotes').value = '';
-            toggleCompleteModal(true);
-        }
-
-        function confirmTaskCompletion(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('completeTaskId').value);
-            const notes = document.getElementById('completionNotes').value;
-            const task = tasks.find(t => t.id === id);
-            const activeUser = effectiveUser || currentUser;
-
-            if (task) {
-                task.completionNotes = notes;
-                if (activeUser.role === 'LUCRĂTOR') {
-                    task.status = 'PENDING_APPROVAL';
-                    alert('Sarcina a fost trimisă către coordonator pentru confirmare!');
-                } else {
-                    task.status = 'COMPLETED';
-                    alert('Sarcina a fost marcată ca finalizată!');
-                }
-                saveTasks();
-                toggleCompleteModal(false);
-                renderTasks();
-            }
-        }
-
-        function toggleReopenModal(show) { document.getElementById('reopenModal').classList.toggle('hidden', !show); }
-        function openReopenModal(id) {
-            document.getElementById('reopenTaskId').value = id;
-            document.getElementById('reopenReason').value = '';
-            toggleReopenModal(true);
-        }
-
-        function confirmTaskReopen(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('reopenTaskId').value);
-            const reason = document.getElementById('reopenReason').value;
-            const task = tasks.find(t => t.id === id);
-            const activeUser = effectiveUser || currentUser;
-
-            if (task) {
-                task.status = 'IN_PROGRESS';
-                const substituteTag = isSubstituteActive ? ` (Înlocuitor al lui ${effectiveUser.name})` : '';
-                task.reopenNotes = `[Redeschis la ${new Date().toLocaleDateString('ro-RO')} de ${currentUser.name}${substituteTag}]: ${reason}`;
-                saveTasks();
-                toggleReopenModal(false);
-                alert('Sarcina a fost redeschisă și retrimisă executantului!');
-                renderTasks();
-            }
-        }
-
-        function openApproveModal(id) {
-            const task = tasks.find(t => t.id === id);
-            if (!task) return;
-
-            document.getElementById('approveTaskId').value = id;
-            const assignedUser = USERS.find(u => u.email === task.assignedTo);
-            
-            document.getElementById('approveModalDetails').innerHTML = `
-                <div><strong>Tip:</strong> ${task.type || '-'}</div>
-                <div><strong>Lucrare:</strong> ${task.title}</div>
-                <div><strong>Executant:</strong> ${assignedUser ? assignedUser.name : task.assignedTo}</div>
-                <div><strong>Explicație/Nr. Document:</strong> ${task.completionNotes || 'Fără explicație'}</div>
-            `;
-            
-            document.getElementById('approveModal').classList.remove('hidden');
-        }
-
-        function handleApproveAction(approved) {
-            const id = parseInt(document.getElementById('approveTaskId').value);
-            const task = tasks.find(t => t.id === id);
-
-            if (task) {
-                if (approved) {
-                    task.status = 'COMPLETED';
-                    alert('Ați confirmat finalizarea sarcinii!');
-                } else {
-                    task.status = 'IN_PROGRESS';
-                    alert('Sarcina a fost respinsă și retrimisă la executant!');
-                }
-                saveTasks();
-                document.getElementById('approveModal').classList.add('hidden');
-                renderTasks();
-            }
         }
     </script>
 </body>
