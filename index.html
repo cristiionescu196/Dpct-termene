@@ -66,9 +66,38 @@
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg shadow-md transition">
-                    Salvează și Trmite Notificare
+                    Salvează și Trimite Notificare
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Finalizare / Explicatii -->
+    <div id="completeModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Detalii Finalizare Lucrare</h3>
+            <p class="text-xs text-slate-500 mb-4">Introduceți modul de rezolvare și numărul de înregistrare al documentului/răspunsului.</p>
+            <form onsubmit="confirmTaskCompletion(event)">
+                <input type="hidden" id="completeTaskId">
+                <textarea id="completionNotes" required rows="3" placeholder="Ex: S-a transmis adresa nr. 12345/DPCT din 24.08.2026..." class="w-full p-3 border rounded-lg text-sm mb-4 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                <div class="flex gap-2">
+                    <button type="button" onclick="toggleCompleteModal(false)" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-lg font-medium text-sm">Anulează</button>
+                    <button type="submit" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm shadow">Trimite Spre Aprobare</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Aprobare Coordonator -->
+    <div id="approveModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Aprobare Finalizare Lucrare</h3>
+            <div id="approveModalDetails" class="bg-slate-50 p-3 rounded-lg text-xs text-slate-600 mb-4 space-y-1 border"></div>
+            <input type="hidden" id="approveTaskId">
+            <div class="flex gap-2">
+                <button type="button" onclick="handleApproveAction(false)" class="w-1/2 bg-red-100 hover:bg-red-200 text-red-700 py-2.5 rounded-lg font-medium text-sm">Respinge</button>
+                <button type="button" onclick="handleApproveAction(true)" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-medium text-sm shadow">Aprobă & Finalizează</button>
+            </div>
         </div>
     </div>
 
@@ -194,8 +223,8 @@
         let activeTab = 'all';
 
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
-            { id: 1, title: 'Raport evaluare riscuri', desc: 'Transmitere răspuns către ANP', assignedTo: 'delia@termenedpct.ro', createdBy: 'cristi@termenedpct.ro', dueDate: new Date().toISOString().split('T')[0], status: 'IN_PROGRESS', zone: 'SPCT_CRISTI' },
-            { id: 2, title: 'Adresă informare penitenciar', desc: 'Verificare documente', assignedTo: 'daria@termenedpct.ro', createdBy: 'octavian@termenedpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI' }
+            { id: 1, title: 'Raport evaluare riscuri', desc: 'Transmitere răspuns către ANP', assignedTo: 'delia@termenedpct.ro', createdBy: 'cristi@termenedpct.ro', dueDate: new Date().toISOString().split('T')[0], status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' },
+            { id: 2, title: 'Adresă informare penitenciar', desc: 'Verificare documente', assignedTo: 'daria@termenedpct.ro', createdBy: 'octavian@termenedpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' }
         ];
 
         function saveTasks() {
@@ -349,13 +378,35 @@
 
             filtered.forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
-                const isOverdue = t.dueDate < today && t.status !== 'COMPLETED';
+                const isOverdue = t.dueDate < today && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
                 
                 let statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">În lucru</span>`;
-                if (t.status === 'COMPLETED') {
+                if (t.status === 'PENDING_APPROVAL') {
+                    statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">În așteptare aprobare</span>`;
+                } else if (t.status === 'COMPLETED') {
                     statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700">Finalizată</span>`;
                 } else if (isOverdue) {
                     statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Depășită</span>`;
+                }
+
+                // Generare Butoane Actiune
+                let actionBtn = '';
+                const isBoss = ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role);
+
+                if (t.status === 'PENDING_APPROVAL') {
+                    if (isBoss) {
+                        actionBtn = `<button type="button" onclick="openApproveModal(${t.id})" class="text-xs bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
+                            <i class="fa-solid fa-clock-rotate-left mr-1"></i> Revizuiește & Aprobă
+                        </button>`;
+                    } else {
+                        actionBtn = `<span class="text-xs text-amber-600 italic">Așteaptă confirmarea coordonatorului</span>`;
+                    }
+                } else if (t.status === 'IN_PROGRESS') {
+                    actionBtn = `<button type="button" onclick="openCompleteModal(${t.id})" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 transition">
+                        Bifează Finalizare
+                    </button>`;
+                } else if (t.status === 'COMPLETED') {
+                    actionBtn = `<div class="text-xs text-emerald-600"><i class="fa-solid fa-check mr-1"></i> Finalizat</div>`;
                 }
 
                 const tr = document.createElement('tr');
@@ -364,17 +415,12 @@
                     <td class="p-4">
                         <div class="font-bold text-slate-900">${t.title}</div>
                         <div class="text-xs text-slate-500">${t.desc || '-'}</div>
+                        ${t.completionNotes ? `<div class="mt-1 text-xs bg-slate-100 p-1.5 rounded text-slate-600"><strong>Notă finalizare:</strong> ${t.completionNotes}</div>` : ''}
                     </td>
                     <td class="p-4 font-medium text-slate-700">${assignedUser ? assignedUser.name : t.assignedTo}</td>
                     <td class="p-4 font-mono text-xs ${isOverdue ? 'text-red-600 font-bold' : 'text-slate-600'}">${t.dueDate}</td>
                     <td class="p-4">${statusBadge}</td>
-                    <td class="p-4 text-right">
-                        ${t.status !== 'COMPLETED' ? `
-                            <button type="button" onclick="toggleCompleteTask(${t.id})" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 transition">
-                                Finalizat
-                            </button>
-                        ` : '<i class="fa-solid fa-check text-emerald-500"></i>'}
-                    </td>
+                    <td class="p-4 text-right">${actionBtn}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -406,7 +452,8 @@
                 createdBy: currentUser.email,
                 dueDate,
                 status: 'IN_PROGRESS',
-                zone: targetUser ? targetUser.zone : 'SPCT_CRISTI'
+                zone: targetUser ? targetUser.zone : 'SPCT_CRISTI',
+                completionNotes: ''
             };
 
             tasks.push(newTask);
@@ -419,11 +466,72 @@
             renderTasks();
         }
 
-        function toggleCompleteTask(id) {
+        // --- FLUX NOU DE FINALIZARE SI APROBARE ---
+        function toggleCompleteModal(show) {
+            document.getElementById('completeModal').classList.toggle('hidden', !show);
+        }
+
+        function openCompleteModal(id) {
+            document.getElementById('completeTaskId').value = id;
+            document.getElementById('completionNotes').value = '';
+            toggleCompleteModal(true);
+        }
+
+        function confirmTaskCompletion(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('completeTaskId').value);
+            const notes = document.getElementById('completionNotes').value;
             const task = tasks.find(t => t.id === id);
+
             if (task) {
-                task.status = 'COMPLETED';
+                task.completionNotes = notes;
+                
+                // Daca cel care bifeaza este Angajat -> Merge la aprobare
+                if (currentUser.role === 'ANGAJAT') {
+                    task.status = 'PENDING_APPROVAL';
+                    alert('Sarcina a fost trimisă către coordonator pentru confirmare!');
+                } else {
+                    // Daca bifeaza direct un Coordonator/Sef/Director -> Se finalizeaza direct
+                    task.status = 'COMPLETED';
+                    alert('Sarcina a fost marcată ca finalizată!');
+                }
+                
                 saveTasks();
+                toggleCompleteModal(false);
+                renderTasks();
+            }
+        }
+
+        function openApproveModal(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            document.getElementById('approveTaskId').value = id;
+            const assignedUser = USERS.find(u => u.email === task.assignedTo);
+            
+            document.getElementById('approveModalDetails').innerHTML = `
+                <div><strong>Lucrare:</strong> ${task.title}</div>
+                <div><strong>Executant:</strong> ${assignedUser ? assignedUser.name : task.assignedTo}</div>
+                <div><strong>Explicație/Nr. Document:</strong> ${task.completionNotes || 'Fără explicație'}</div>
+            `;
+            
+            document.getElementById('approveModal').classList.remove('hidden');
+        }
+
+        function handleApproveAction(approved) {
+            const id = parseInt(document.getElementById('approveTaskId').value);
+            const task = tasks.find(t => t.id === id);
+
+            if (task) {
+                if (approved) {
+                    task.status = 'COMPLETED';
+                    alert('Ați confirmat finalizarea sarcinii!');
+                } else {
+                    task.status = 'IN_PROGRESS';
+                    alert('Sarcina a fost respinsă și retrimisă la executant!');
+                }
+                saveTasks();
+                document.getElementById('approveModal').classList.add('hidden');
                 renderTasks();
             }
         }
