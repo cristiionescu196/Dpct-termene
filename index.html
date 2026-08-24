@@ -12,6 +12,21 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
 
+    <!-- Modal Notificare Termen Apropiat -->
+    <div id="dueWarningModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border-l-8 border-amber-500">
+            <div class="flex items-center space-x-3 text-amber-600 mb-3">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <h3 class="text-lg font-bold text-slate-900">Atenție! Termene Apropiate</h3>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">Apreciem promptitudinea! Următoarele sarcini necesită atenție în următoarele 2 zile:</p>
+            <div id="dueWarningList" class="space-y-2 max-h-48 overflow-y-auto mb-4 text-sm"></div>
+            <button type="button" onclick="document.getElementById('dueWarningModal').classList.add('hidden')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-lg transition shadow">
+                Am înțeles, mă ocup!
+            </button>
+        </div>
+    </div>
+
     <!-- Modal Schimbare Parola Obligatorie -->
     <div id="pwdModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
@@ -120,6 +135,13 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Parolă</label>
                     <input type="password" id="password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
+                <!-- OPȚIUNE PĂSTREAZĂ-MĂ AUTENTIFICAT -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="rememberMe" class="w-4 h-4 text-blue-900 rounded border-slate-300 focus:ring-blue-500">
+                        <span class="text-xs text-slate-600 font-medium">Păstrează-mă autentificat</span>
+                    </label>
+                </div>
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg shadow-lg transition">
                     Autentificare
                 </button>
@@ -223,9 +245,21 @@
         let activeTab = 'all';
 
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
-            { id: 1, title: 'Raport evaluare riscuri', desc: 'Transmitere răspuns către ANP', assignedTo: 'delia@termenedpct.ro', createdBy: 'cristi@termenedpct.ro', dueDate: new Date().toISOString().split('T')[0], status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' },
+            { id: 1, title: 'Raport evaluare riscuri', desc: 'Transmitere răspuns către ANP', assignedTo: 'delia@termenedpct.ro', createdBy: 'cristi@termenedpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' },
             { id: 2, title: 'Adresă informare penitenciar', desc: 'Verificare documente', assignedTo: 'daria@termenedpct.ro', createdBy: 'octavian@termenedpct.ro', dueDate: '2026-08-30', status: 'IN_PROGRESS', zone: 'SPCT_CRISTI', completionNotes: '' }
         ];
+
+        // Verificare sesiune la încărcarea paginii
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUserEmail = localStorage.getItem('dpct_logged_user');
+            if (savedUserEmail) {
+                const user = USERS.find(u => u.email === savedUserEmail);
+                if (user) {
+                    currentUser = user;
+                    initDashboard();
+                }
+            }
+        });
 
         function saveTasks() {
             localStorage.setItem('dpct_tasks', JSON.stringify(tasks));
@@ -235,6 +269,7 @@
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
             const pwd = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
 
             const user = USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
 
@@ -250,6 +285,12 @@
             }
 
             currentUser = user;
+
+            if (rememberMe) {
+                localStorage.setItem('dpct_logged_user', user.email);
+            } else {
+                localStorage.removeItem('dpct_logged_user');
+            }
             
             if (storedPwd === '1234@') {
                 document.getElementById('pwdModal').classList.remove('hidden');
@@ -275,6 +316,7 @@
 
         function handleLogout() {
             currentUser = null;
+            localStorage.removeItem('dpct_logged_user');
             document.getElementById('appScreen').classList.add('hidden');
             document.getElementById('loginScreen').classList.remove('hidden');
         }
@@ -293,6 +335,34 @@
 
             populateUserDropdowns();
             renderTasks();
+            checkUpcomingDeadlines();
+        }
+
+        function checkUpcomingDeadlines() {
+            const today = new Date();
+            const warningList = document.getElementById('dueWarningList');
+            warningList.innerHTML = '';
+            let hasWarnings = false;
+
+            tasks.forEach(t => {
+                if (t.assignedTo === currentUser.email && t.status === 'IN_PROGRESS') {
+                    const taskDate = new Date(t.dueDate);
+                    const diffTime = taskDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays >= 0 && diffDays <= 2) {
+                        hasWarnings = true;
+                        const item = document.createElement('div');
+                        item.className = "p-2 bg-amber-50 border border-amber-200 rounded text-slate-800 font-medium";
+                        item.innerHTML = `📌 <strong>${t.title}</strong> — <span class="text-amber-700">Termen: ${t.dueDate} (${diffDays === 0 ? 'Azi' : diffDays + ' zile rămase'})</span>`;
+                        warningList.appendChild(item);
+                    }
+                }
+            });
+
+            if (hasWarnings) {
+                document.getElementById('dueWarningModal').classList.remove('hidden');
+            }
         }
 
         function populateUserDropdowns() {
@@ -349,7 +419,8 @@
             const tbody = document.getElementById('taskTableBody');
             tbody.innerHTML = '';
 
-            const today = new Date().toISOString().split('T')[0];
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayObj = new Date();
 
             let countToday = 0, countSoon = 0, countOverdue = 0;
             
@@ -360,9 +431,9 @@
                              (t.assignedTo === currentUser.email);
                              
                 if (canSee && t.status !== 'COMPLETED') {
-                    if (t.dueDate === today) countToday++;
-                    else if (t.dueDate > today) countSoon++;
-                    else if (t.dueDate < today) countOverdue++;
+                    if (t.dueDate === todayStr) countToday++;
+                    else if (t.dueDate > todayStr) countSoon++;
+                    else if (t.dueDate < todayStr) countOverdue++;
                 }
             });
 
@@ -378,8 +449,12 @@
 
             filtered.forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
-                const isOverdue = t.dueDate < today && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
+                const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED' && t.status !== 'PENDING_APPROVAL';
                 
+                const taskDate = new Date(t.dueDate);
+                const diffDays = Math.ceil((taskDate - todayObj) / (1000 * 60 * 60 * 24));
+                const isTwoDaysLeft = diffDays >= 0 && diffDays <= 2 && t.status === 'IN_PROGRESS';
+
                 let statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">În lucru</span>`;
                 if (t.status === 'PENDING_APPROVAL') {
                     statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">În așteptare aprobare</span>`;
@@ -389,7 +464,6 @@
                     statusBadge = `<span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Depășită</span>`;
                 }
 
-                // Generare Butoane Actiune
                 let actionBtn = '';
                 const isBoss = ['DIRECTOR', 'SEF_SPCT', 'COORDONATOR'].includes(currentUser.role);
 
@@ -418,7 +492,10 @@
                         ${t.completionNotes ? `<div class="mt-1 text-xs bg-slate-100 p-1.5 rounded text-slate-600"><strong>Notă finalizare:</strong> ${t.completionNotes}</div>` : ''}
                     </td>
                     <td class="p-4 font-medium text-slate-700">${assignedUser ? assignedUser.name : t.assignedTo}</td>
-                    <td class="p-4 font-mono text-xs ${isOverdue ? 'text-red-600 font-bold' : 'text-slate-600'}">${t.dueDate}</td>
+                    <td class="p-4 font-mono text-xs">
+                        <span class="${isOverdue ? 'text-red-600 font-bold' : (isTwoDaysLeft ? 'text-amber-600 font-bold' : 'text-slate-600')}">${t.dueDate}</span>
+                        ${isTwoDaysLeft ? `<br><span class="inline-block mt-1 px-2 py-0.5 text-[10px] bg-amber-100 text-amber-800 font-semibold rounded">⏳ Termen în 2 zile</span>` : ''}
+                    </td>
                     <td class="p-4">${statusBadge}</td>
                     <td class="p-4 text-right">${actionBtn}</td>
                 `;
@@ -466,7 +543,6 @@
             renderTasks();
         }
 
-        // --- FLUX NOU DE FINALIZARE SI APROBARE ---
         function toggleCompleteModal(show) {
             document.getElementById('completeModal').classList.toggle('hidden', !show);
         }
@@ -486,12 +562,10 @@
             if (task) {
                 task.completionNotes = notes;
                 
-                // Daca cel care bifeaza este Angajat -> Merge la aprobare
                 if (currentUser.role === 'ANGAJAT') {
                     task.status = 'PENDING_APPROVAL';
                     alert('Sarcina a fost trimisă către coordonator pentru confirmare!');
                 } else {
-                    // Daca bifeaza direct un Coordonator/Sef/Director -> Se finalizeaza direct
                     task.status = 'COMPLETED';
                     alert('Sarcina a fost marcată ca finalizată!');
                 }
