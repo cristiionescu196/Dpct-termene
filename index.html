@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-slate-900">Alerte Termene Urgente</h3>
-                    <p class="text-xs text-slate-500">Atenție! Aveti lucrări care necesită orezolvare rapidă.</p>
+                    <p class="text-xs text-slate-500">Atenție! Aveți lucrări care necesită rezolvare rapidă.</p>
                 </div>
             </div>
             
@@ -69,7 +69,7 @@
                     </div>
                     <div>
                         <span class="text-slate-400 block font-semibold uppercase">Atribuită lui:</span>
-                        <span id="detailAssignedTo" class="font-bold text-slate-700"></span>
+                        <span id="detailAssignedTo" class="font-bold text-slate-900"></span>
                     </div>
                     <div class="mt-2">
                         <span class="text-slate-400 block font-semibold uppercase">Termen Limită:</span>
@@ -126,9 +126,24 @@
                     <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Descriere & Detalii Trasate</label>
                     <textarea id="taskDesc" rows="3" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Specificați detaliile necesare..."></textarea>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Atribuie Lucrătorului</label>
-                    <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Locație / Penitenciar / Unitate</label>
+                        <select id="taskUnit" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" onchange="updateAssigneeOptionsByUnit(this.value)">
+                            <option value="Penitenciarul Arad">Penitenciarul Arad</option>
+                            <option value="Penitenciarul Timișoara">Penitenciarul Timișoara</option>
+                            <option value="Penitenciarul Oradea">Penitenciarul Oradea</option>
+                            <option value="CE Buziaș">CE Buziaș</option>
+                            <option value="Penitenciarul Slobozia">Penitenciarul Slobozia</option>
+                            <option value="Penitenciarul Ploiești">Penitenciarul Ploiești</option>
+                            <option value="Penitenciarul Mărgineni">Penitenciarul Mărgineni</option>
+                            <option value="Penitenciarul Târgșor">Penitenciarul Târgșor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Membru Echipă / Responsabil</label>
+                        <select id="taskAssignee" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"></select>
+                    </div>
                 </div>
                 
                 <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-center space-x-3">
@@ -149,8 +164,8 @@
     <div id="loginScreen" class="flex min-h-screen items-center justify-center p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-900 text-amber-400 rounded-2xl mb-4 shadow-xl border-2 border-amber-500/30">
-                    <i class="fa-solid fa-shield-halved text-3xl text-amber-400"></i>
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-900 rounded-2xl mb-4 shadow-xl border-2 border-amber-500/30 overflow-hidden p-2">
+                    <img src="https://anp.gov.ro/wp-content/uploads/2021/03/sigla-anp-300x300.png" alt="Stema ANP" class="w-full h-full object-contain">
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900">DPCT - ANP</h1>
                 <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest font-semibold">Gestiune Termene Penitenciare</p>
@@ -182,8 +197,8 @@
         <!-- HEADER FIXAT SI CURAT -->
         <header class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow-md border-b border-slate-800">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 text-amber-400">
-                    <i class="fa-solid fa-shield-halved text-base"></i>
+                <div class="w-9 h-9 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 overflow-hidden p-1">
+                    <img src="https://anp.gov.ro/wp-content/uploads/2021/03/sigla-anp-300x300.png" alt="Stema ANP" class="w-full h-full object-contain">
                 </div>
                 <div>
                     <h2 class="font-bold leading-tight text-sm tracking-wide">DPCT - Termene</h2>
@@ -226,39 +241,6 @@
                 </button>
             </div>
 
-            <!-- ANTET PANOUL DE BORD -->
-            <div id="dashboardHeader" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <h1 class="text-xl font-bold text-slate-900">Tablou de Bord Termene</h1>
-                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5 transition">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Alocare Termen Nou</span>
-                </button>
-            </div>
-
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                <div onclick="setTab('all')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
-                    <p class="text-[11px] text-slate-500 font-semibold uppercase">Termene Totale</p>
-                    <p id="kpiAll" class="text-xl font-extrabold text-slate-900 mt-0.5">0</p>
-                </div>
-                <div onclick="setTab('overdue')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-red-400 transition bg-red-50/30">
-                    <p class="text-[11px] text-red-600 font-bold uppercase">Depășite</p>
-                    <p id="kpiOverdue" class="text-xl font-extrabold text-red-600 mt-0.5">0</p>
-                </div>
-                <div onclick="setTab('today')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
-                    <p class="text-[11px] text-amber-600 font-semibold uppercase">Termen Azi</p>
-                    <p id="kpiToday" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
-                </div>
-                <div onclick="setTab('soon')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
-                    <p class="text-[11px] text-blue-600 font-semibold uppercase">În Curând</p>
-                    <p id="kpiSoon" class="text-xl font-extrabold text-blue-600 mt-0.5">0</p>
-                </div>
-                <div onclick="setTab('completed')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 transition">
-                    <p class="text-[11px] text-emerald-600 font-semibold uppercase">Finalizate</p>
-                    <p id="kpiCompleted" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
-                </div>
-            </div>
-
             <!-- SECTIUNE SELECTOR UNITATI (VIZIBIL DOAR COORDONATORILOR SI ADMIN) -->
             <div id="unitSelectorSection" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
@@ -277,7 +259,7 @@
                     <option value="COMPLETED">Doar cele Finalizate</option>
                 </select>
 
-                <!-- DROPDOWN LUCRATORI CU SCROLL -->
+                <!-- DROPDOWN LUCRATORI -->
                 <div id="workerFilterContainer" class="flex items-center space-x-1">
                     <label class="text-slate-500 font-semibold">Lucrător:</label>
                     <select id="filterWorkerDropdown" onchange="handleWorkerDropdownChange(this.value)" class="px-2.5 py-1.5 font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-slate-50 max-w-[200px]">
@@ -297,9 +279,18 @@
                 </button>
             </div>
 
+            <!-- ANTET PANOUL DE BORD -->
+            <div id="dashboardHeader" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <h1 class="text-xl font-bold text-slate-900">Tablou de Bord Termene</h1>
+                <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5 transition">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Alocare Termen Nou</span>
+                </button>
+            </div>
+
             <!-- TABEL RESTAURAT CU ACȚIUNI COMPLETE -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="w-full">
+                <div class="w-full overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b">
@@ -313,6 +304,30 @@
                         </thead>
                         <tbody id="taskTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- KPI Cards JOS -->
+            <div id="kpiContainer" class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
+                <div onclick="setTab('all')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
+                    <p class="text-[11px] text-slate-500 font-semibold uppercase">Termene Totale</p>
+                    <p id="kpiAll" class="text-xl font-extrabold text-slate-900 mt-0.5">0</p>
+                </div>
+                <div onclick="setTab('overdue')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-red-400 transition bg-red-50/30">
+                    <p class="text-[11px] text-red-600 font-bold uppercase">Depășite</p>
+                    <p id="kpiOverdue" class="text-xl font-extrabold text-red-600 mt-0.5">0</p>
+                </div>
+                <div onclick="setTab('today')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
+                    <p class="text-[11px] text-amber-600 font-semibold uppercase">Termen Azi</p>
+                    <p id="kpiToday" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
+                </div>
+                <div onclick="setTab('soon')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
+                    <p class="text-[11px] text-blue-600 font-semibold uppercase">În Curând (&lt;5 Zile)</p>
+                    <p id="kpiSoon" class="text-xl font-extrabold text-blue-600 mt-0.5">0</p>
+                </div>
+                <div onclick="setTab('completed')" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 transition">
+                    <p class="text-[11px] text-emerald-600 font-semibold uppercase">Finalizate</p>
+                    <p id="kpiCompleted" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
                 </div>
             </div>
 
@@ -369,7 +384,7 @@
                 const user = USERS.find(u => u.email === savedUserEmail);
                 if (user) { 
                     currentUser = user; 
-                    initDashboard(true); // Se transmite true pentru declanșare pop-up la pornire
+                    initDashboard(true);
                 }
             }
         });
@@ -399,7 +414,6 @@
 
             document.getElementById('userDisplay').innerText = `${currentUser.name} — ${currentUser.office} (${currentUser.role})`;
 
-            // IZOLARE STRICTĂ A INTERFAȚEI ÎN FUNCȚIE DE ROL
             const isWorker = currentUser.role === 'LUCRĂTOR';
             
             if (isWorker) {
@@ -416,28 +430,27 @@
             }
 
             populateWorkerDropdown();
+            populateCreatorDropdown();
+            updateAssigneeOptionsByUnit(document.getElementById('taskUnit').value);
             renderTasks();
 
-            // Dacă la conectare există alerte, afișăm și pop-up-ul instant
             if (showPopup) {
                 checkAndTriggerLoginAlerts();
             }
         }
 
         function checkAndTriggerLoginAlerts() {
-            const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = new Date().toISOString().split('T')[0];
             const popupContent = document.getElementById('popupAlertsContent');
             popupContent.innerHTML = '';
             let alertCount = 0;
 
-            // Preluăm termenele vizibile pentru utilizatorul curent
             tasks.forEach(t => {
                 if (t.status === 'COMPLETED') return;
 
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                const workerName = assignedUser ? assignedUser.name : t.assignedTo;
 
-                // Izolare pentru lucrători
                 if (currentUser.role === 'LUCRĂTOR') {
                     const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
                     const isMyTask = t.assignedTo === currentUser.email;
@@ -446,18 +459,19 @@
                 }
 
                 const taskDate = new Date(t.dueDate);
-                const diffTime = taskDate - today;
+                const todayDate = new Date(todayStr);
+                const diffTime = taskDate - todayDate;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                 if (t.dueDate === todayStr) {
                     alertCount++;
-                    popupContent.innerHTML += `<div class="p-2 bg-amber-50 rounded-lg border border-amber-300 font-semibold text-amber-900"><i class="fa-solid fa-clock text-amber-600 mr-1.5"></i> <strong>TERMEN AZI:</strong> "${t.title}" (${t.unit})</div>`;
-                } else if (t.dueDate > todayStr && diffDays <= 3) {
+                    popupContent.innerHTML += `<div class="p-2.5 bg-amber-50 rounded-lg border border-amber-300 font-semibold text-amber-900"><i class="fa-solid fa-clock text-amber-600 mr-1.5"></i> <strong>TERMEN AZI:</strong> "${t.title}" (${t.unit}) — <strong>Responsabil:</strong> ${workerName}</div>`;
+                } else if (t.dueDate > todayStr && diffDays < 5) { // Regula SUB 5 ZILE
                     alertCount++;
-                    popupContent.innerHTML += `<div class="p-2 bg-blue-50 rounded-lg border border-blue-200 text-blue-900"><i class="fa-solid fa-calendar-day text-blue-600 mr-1.5"></i> <strong>În ${diffDays} zile:</strong> "${t.title}" (${t.unit}) - scadență pe ${t.dueDate.split('-').reverse().join('.')}</div>`;
+                    popupContent.innerHTML += `<div class="p-2.5 bg-blue-50 rounded-lg border border-blue-200 text-blue-900"><i class="fa-solid fa-calendar-day text-blue-600 mr-1.5"></i> <strong>În ${diffDays} zile:</strong> "${t.title}" (${t.unit}) — <strong>Responsabil:</strong> ${workerName} (scadență: ${t.dueDate.split('-').reverse().join('.')})</div>`;
                 } else if (t.dueDate < todayStr) {
                     alertCount++;
-                    popupContent.innerHTML += `<div class="p-2 bg-red-50 rounded-lg border border-red-300 font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-600 mr-1.5"></i> <strong>DEPĂȘIT:</strong> "${t.title}" (${t.unit}) - trebuia finalizat pe ${t.dueDate.split('-').reverse().join('.')}</div>`;
+                    popupContent.innerHTML += `<div class="p-2.5 bg-red-50 rounded-lg border border-red-300 font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-600 mr-1.5"></i> <strong>DEPĂȘIT:</strong> "${t.title}" (${t.unit}) — <strong>Responsabil:</strong> ${workerName} (scadență: ${t.dueDate.split('-').reverse().join('.')})</div>`;
                 }
             });
 
@@ -494,46 +508,51 @@
             activeUnitView = unitName;
             document.getElementById('unitViewTitle').innerText = unitName;
             document.getElementById('unitViewBanner').classList.remove('hidden');
+            document.getElementById('unitSelectorSection').classList.add('hidden');
+            document.getElementById('filterSection').classList.add('hidden');
             document.getElementById('dashboardHeader').classList.add('hidden');
-            renderUnitButtons();
             renderTasks();
         }
 
         function clearUnitView() {
             activeUnitView = '';
             document.getElementById('unitViewBanner').classList.add('hidden');
-            document.getElementById('dashboardHeader').classList.remove('hidden');
-            renderUnitButtons();
+            if (currentUser.role !== 'LUCRĂTOR') {
+                document.getElementById('unitSelectorSection').classList.remove('hidden');
+                document.getElementById('filterSection').classList.remove('hidden');
+                document.getElementById('dashboardHeader').classList.remove('hidden');
+            }
             renderTasks();
         }
 
         function populateWorkerDropdown() {
-            const dropdown = document.getElementById('filterWorkerDropdown');
-            const taskAssigneeSelect = document.getElementById('taskAssignee');
-            const filterCreatorSelect = document.getElementById('filterCreator');
-
-            dropdown.innerHTML = '<option value="">Toți lucrătorii</option>';
-            taskAssigneeSelect.innerHTML = '';
-            filterCreatorSelect.innerHTML = '<option value="">Cine a trasat termenul</option>';
-
-            USERS.forEach(u => {
-                const optCreator = document.createElement('option');
-                optCreator.value = u.email;
-                optCreator.textContent = `${u.name} (${u.role})`;
-                filterCreatorSelect.appendChild(optCreator);
-
-                if (u.role === 'LUCRĂTOR') {
-                    const opt = document.createElement('option');
-                    opt.value = u.email;
-                    opt.textContent = `${u.name} — ${u.office}`;
-                    dropdown.appendChild(opt);
-
-                    const opt2 = document.createElement('option');
-                    opt2.value = u.email;
-                    opt2.textContent = `${u.name} (${u.unit})`;
-                    taskAssigneeSelect.appendChild(opt2);
-                }
+            const select = document.getElementById('filterWorkerDropdown');
+            select.innerHTML = '<option value="">Toți lucrătorii</option>';
+            USERS.filter(u => u.role === 'LUCRĂTOR').forEach(w => {
+                select.innerHTML += `<option value="${w.email}">${w.name} (${w.unit})</option>`;
             });
+        }
+
+        function populateCreatorDropdown() {
+            const select = document.getElementById('filterCreator');
+            select.innerHTML = '<option value="">Cine a trasat termenul</option>';
+            USERS.filter(u => u.role === 'COORDONATOR' || u.role === 'ADMIN').forEach(c => {
+                select.innerHTML += `<option value="${c.email}">${c.name}</option>`;
+            });
+        }
+
+        function updateAssigneeOptionsByUnit(unit) {
+            const select = document.getElementById('taskAssignee');
+            select.innerHTML = '';
+            const matchingWorkers = USERS.filter(u => u.unit === unit || (u.multiUnits && u.multiUnits.includes(unit)));
+            
+            if (matchingWorkers.length > 0) {
+                matchingWorkers.forEach(w => {
+                    select.innerHTML += `<option value="${w.email}">${w.name} (${w.office})</option>`;
+                });
+            } else {
+                select.innerHTML += `<option value="${currentUser.email}">${currentUser.name} (Neatribuit direct)</option>`;
+            }
         }
 
         function handleWorkerDropdownChange(val) {
@@ -542,202 +561,256 @@
         }
 
         function resetAllFilters() {
-            activeUnitView = '';
-            selectedWorkerFilter = '';
-            document.getElementById('unitViewBanner').classList.add('hidden');
-            document.getElementById('dashboardHeader').classList.remove('hidden');
             document.getElementById('filterStatus').value = 'ACTIVE';
             document.getElementById('filterWorkerDropdown').value = '';
             document.getElementById('filterCreator').value = '';
+            selectedWorkerFilter = '';
             activeTab = 'all';
-            if (currentUser.role !== 'LUCRĂTOR') renderUnitButtons();
+            clearUnitView();
+        }
+
+        function setTab(tab) {
+            activeTab = tab;
             renderTasks();
         }
 
-        function getFilteredTasks() {
-            const today = new Date().toISOString().split('T')[0];
-            const selectedStatus = document.getElementById('filterStatus').value;
-            const selectedCreator = document.getElementById('filterCreator').value;
-
-            return tasks.filter(t => {
-                const assignedUser = USERS.find(u => u.email === t.assignedTo);
-                
-                // 1. REGULĂ DE SECURITATE: Dacă utilizatorul este LUCRĂTOR, vede DOAR lucrările sale sau pe ale unității sale
-                if (currentUser.role === 'LUCRĂTOR') {
-                    const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
-                    const isMyTask = t.assignedTo === currentUser.email;
-                    const isMyUnitTask = userUnits.includes(t.unit) || (assignedUser && userUnits.includes(assignedUser.unit));
-                    
-                    if (!isMyTask && !isMyUnitTask) return false;
-                }
-
-                // 2. Filtrare Coordonator pe unități
-                if (activeUnitView) {
-                    const userUnits = [t.unit, assignedUser ? assignedUser.unit : null, ...(assignedUser && assignedUser.multiUnits ? assignedUser.multiUnits : [])];
-                    if (!userUnits.includes(activeUnitView)) return false;
-                }
-
-                if (selectedWorkerFilter && t.assignedTo !== selectedWorkerFilter) return false;
-                if (selectedCreator && t.createdBy !== selectedCreator) return false;
-
-                if (selectedStatus === 'ACTIVE' && t.status === 'COMPLETED') return false;
-                if (selectedStatus === 'COMPLETED' && t.status !== 'COMPLETED') return false;
-
-                if (activeTab === 'today') return t.dueDate === today && t.status !== 'COMPLETED';
-                if (activeTab === 'soon') return t.dueDate > today && t.status !== 'COMPLETED';
-                if (activeTab === 'overdue') return t.dueDate < today && t.status !== 'COMPLETED';
-                if (activeTab === 'completed') return t.status === 'COMPLETED';
-
-                return true;
-            });
-        }
-
         function renderTasks() {
-            let filtered = getFilteredTasks();
             const tbody = document.getElementById('taskTableBody');
             tbody.innerHTML = '';
 
-            const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = new Date().toISOString().split('T')[0];
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterCreator = document.getElementById('filterCreator').value;
 
-            let countToday = 0, countSoon = 0, countOverdue = 0, countCompleted = 0;
-            
-            // Calcul KPIs & Generare Alerte Active în Banner
-            const alertsContainer = document.getElementById('alertsContainer');
-            alertsContainer.innerHTML = '';
-            let activeAlertsCount = 0;
+            let kpiAll = 0, kpiOverdue = 0, kpiToday = 0, kpiSoon = 0, kpiCompleted = 0;
 
-            filtered.forEach(t => {
+            // Calculare KPI-uri
+            tasks.forEach(t => {
+                if (currentUser.role === 'LUCRĂTOR') {
+                    const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
+                    const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                    const isMyTask = t.assignedTo === currentUser.email;
+                    const isMyUnitTask = userUnits.includes(t.unit) || (assignedUser && userUnits.includes(assignedUser.unit));
+                    if (!isMyTask && !isMyUnitTask) return;
+                }
+
+                kpiAll++;
                 if (t.status === 'COMPLETED') {
-                    countCompleted++;
+                    kpiCompleted++;
                 } else {
                     const taskDate = new Date(t.dueDate);
-                    const diffTime = taskDate - today;
+                    const todayDate = new Date(todayStr);
+                    const diffTime = taskDate - todayDate;
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                    if (t.dueDate === todayStr) {
-                        countToday++;
-                        activeAlertsCount++;
-                        alertsContainer.innerHTML += `<div class="p-1.5 bg-amber-100 rounded border border-amber-300 font-semibold text-amber-900"><i class="fa-solid fa-clock text-amber-600 mr-1"></i> <strong>HOȚĂRÂR / AZI:</strong> "${t.title}" (${t.unit}) are termenul limită ASTĂZI!</div>`;
-                    } else if (t.dueDate > todayStr) {
-                        countSoon++;
-                        if (diffDays <= 3) {
-                            activeAlertsCount++;
-                            alertsContainer.innerHTML += `<div class="p-1.5 bg-blue-100 rounded border border-blue-200 text-blue-900"><i class="fa-solid fa-calendar-day text-blue-600 mr-1"></i> <strong>Atenție (mai sunt ${diffDays} zile):</strong> "${t.title}" (${t.unit}) are termenul pe ${t.dueDate.split('-').reverse().join('.')}.</div>`;
-                        }
-                    } else if (t.dueDate < todayStr) {
-                        countOverdue++;
-                        activeAlertsCount++;
-                        alertsContainer.innerHTML += `<div class="p-1.5 bg-red-100 rounded border border-red-300 font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-600 mr-1"></i> <strong>TERMEN DEPĂȘIT:</strong> "${t.title}" (${t.unit}) trebuia finalizat pe ${t.dueDate.split('-').reverse().join('.')}!</div>`;
-                    }
+                    if (t.dueDate < todayStr) kpiOverdue++;
+                    if (t.dueDate === todayStr) kpiToday++;
+                    if (t.dueDate > todayStr && diffDays < 5) kpiSoon++; // Sub 5 zile
                 }
             });
 
-            if (activeAlertsCount > 0) {
-                document.getElementById('alertsBanner').classList.remove('hidden');
-            } else {
-                document.getElementById('alertsBanner').classList.add('hidden');
-            }
+            document.getElementById('kpiAll').innerText = kpiAll;
+            document.getElementById('kpiOverdue').innerText = kpiOverdue;
+            document.getElementById('kpiToday').innerText = kpiToday;
+            document.getElementById('kpiSoon').innerText = kpiSoon;
+            document.getElementById('kpiCompleted').innerText = kpiCompleted;
 
-            document.getElementById('kpiAll').innerText = filtered.length;
-            document.getElementById('kpiToday').innerText = countToday;
-            document.getElementById('kpiSoon').innerText = countSoon;
-            document.getElementById('kpiOverdue').innerText = countOverdue;
-            document.getElementById('kpiCompleted').innerText = countCompleted;
+            // Filtrare rânduri afișate
+            const filteredTasks = tasks.filter(t => {
+                if (activeUnitView && t.unit !== activeUnitView) return false;
 
-            // Sortare cronologică (cele urgente primele)
-            filtered.sort((a, b) => {
-                if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1;
-                if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1;
-                return new Date(a.dueDate) - new Date(b.dueDate);
+                if (currentUser.role === 'LUCRĂTOR') {
+                    const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
+                    const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                    const isMyTask = t.assignedTo === currentUser.email;
+                    const isMyUnitTask = userUnits.includes(t.unit) || (assignedUser && userUnits.includes(assignedUser.unit));
+                    if (!isMyTask && !isMyUnitTask) return false;
+                }
+
+                if (selectedWorkerFilter && t.assignedTo !== selectedWorkerFilter) return false;
+                if (filterCreator && t.createdBy !== filterCreator) return false;
+
+                if (filterStatus === 'ACTIVE' && t.status === 'COMPLETED') return false;
+                if (filterStatus === 'COMPLETED' && t.status !== 'COMPLETED') return false;
+
+                if (activeTab === 'overdue' && (t.status === 'COMPLETED' || t.dueDate >= todayStr)) return false;
+                if (activeTab === 'today' && (t.status === 'COMPLETED' || t.dueDate !== todayStr)) return false;
+                if (activeTab === 'soon') {
+                    const taskDate = new Date(t.dueDate);
+                    const todayDate = new Date(todayStr);
+                    const diffDays = Math.ceil((taskDate - todayDate) / (1000 * 60 * 60 * 24));
+                    if (t.status === 'COMPLETED' || t.dueDate <= todayStr || diffDays >= 5) return false;
+                }
+                if (activeTab === 'completed' && t.status !== 'COMPLETED') return false;
+
+                return true;
             });
 
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există termene de afișat conform filtrării curente.</td></tr>`;
+            // Randare Alerte Banner Sus
+            const alertsBanner = document.getElementById('alertsBanner');
+            const alertsContainer = document.getElementById('alertsContainer');
+            alertsContainer.innerHTML = '';
+            let alertCount = 0;
+
+            tasks.forEach(t => {
+                if (t.status === 'COMPLETED') return;
+
+                if (currentUser.role === 'LUCRĂTOR') {
+                    const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
+                    const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                    const isMyTask = t.assignedTo === currentUser.email;
+                    const isMyUnitTask = userUnits.includes(t.unit) || (assignedUser && userUnits.includes(assignedUser.unit));
+                    if (!isMyTask && !isMyUnitTask) return;
+                }
+
+                const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                const workerName = assignedUser ? assignedUser.name : t.assignedTo;
+
+                const taskDate = new Date(t.dueDate);
+                const todayDate = new Date(todayStr);
+                const diffTime = taskDate - todayDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (t.dueDate === todayStr || (t.dueDate > todayStr && diffDays < 5) || t.dueDate < todayStr) {
+                    alertCount++;
+                    let badge = '';
+                    if (t.dueDate === todayStr) badge = '<span class="px-1.5 py-0.5 bg-amber-200 text-amber-900 rounded font-bold text-[10px]">AZI</span>';
+                    else if (t.dueDate < todayStr) badge = '<span class="px-1.5 py-0.5 bg-red-200 text-red-900 rounded font-bold text-[10px]">DEPĂȘIT</span>';
+                    else badge = `<span class="px-1.5 py-0.5 bg-blue-200 text-blue-900 rounded font-bold text-[10px]">${diffDays} ZILE</span>`;
+
+                    alertsContainer.innerHTML += `
+                        <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-amber-200/60 shadow-2xs">
+                            <div class="flex items-center space-x-2">
+                                ${badge}
+                                <span class="font-bold text-slate-800">${t.title}</span>
+                                <span class="text-slate-400">|</span>
+                                <span class="text-slate-600 font-semibold">${t.unit}</span>
+                                <span class="text-slate-400">|</span>
+                                <span class="text-slate-900 font-bold">Responsabil: ${workerName}</span>
+                            </div>
+                            <span class="text-slate-500 text-[11px]">Scadență: ${t.dueDate.split('-').reverse().join('.')}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            alertsBanner.classList.toggle('hidden', alertCount === 0 || activeUnitView !== '');
+
+            // Populare Tabel
+            if (filteredTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">Nu există lucrări care să corespundă filtrelor selectate.</td></tr>`;
                 return;
             }
 
-            filtered.forEach(t => {
+            filteredTasks.sort((a,b) => a.dueDate.localeCompare(b.dueDate)).forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
-                const creatorUser = USERS.find(u => u.email === t.createdBy);
-                
-                const isOverdue = t.dueDate < todayStr && t.status !== 'COMPLETED';
-                const isToday = t.dueDate === todayStr && t.status !== 'COMPLETED';
+                const createdUser = USERS.find(u => u.email === t.createdBy);
 
-                const dateParts = t.dueDate.split('-');
-                const formattedDate = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}`;
+                const workerName = assignedUser ? assignedUser.name : t.assignedTo;
+                const creatorName = createdUser ? createdUser.name : t.createdBy;
 
-                let dateBadgeClass = "bg-slate-100 text-slate-800 border-slate-300";
+                let statusBadge = '';
                 if (t.status === 'COMPLETED') {
-                    dateBadgeClass = "bg-emerald-50 text-emerald-800 border-emerald-200";
-                } else if (isOverdue) {
-                    dateBadgeClass = "bg-red-100 text-red-900 border-red-300 font-extrabold";
-                } else if (isToday) {
-                    dateBadgeClass = "bg-amber-100 text-amber-900 border-amber-300 font-extrabold";
+                    statusBadge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-bold"><i class="fa-solid fa-check mr-1"></i>Finalizat</span>';
+                } else if (t.dueDate < todayStr) {
+                    statusBadge = '<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-[10px] font-bold"><i class="fa-solid fa-exclamation mr-1"></i>Depășit</span>';
+                } else if (t.dueDate === todayStr) {
+                    statusBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-[10px] font-bold"><i class="fa-solid fa-clock mr-1"></i>Termen Azi</span>';
+                } else {
+                    statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-[10px] font-bold">În Lucru</span>';
                 }
 
-                const tr = document.createElement('tr');
-                tr.className = `hover:bg-slate-50 transition ${t.status === 'COMPLETED' ? 'bg-slate-50/50 opacity-75' : ''}`;
-                tr.innerHTML = `
-                    <td class="p-3 whitespace-nowrap">
-                        <span class="px-2.5 py-1 rounded border text-xs font-mono inline-block ${dateBadgeClass}">
-                            ${formattedDate} ${isOverdue ? '⚠️' : (isToday ? '📌' : '')}
-                        </span>
-                    </td>
-                    <td class="p-3" onclick="openDetailModal(${t.id})">
-                        <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border">${t.type || 'Sarcina'}</span>
-                        <div class="font-bold text-slate-900 mt-0.5 cursor-pointer hover:text-blue-700">${t.title}</div>
-                        <div class="text-[11px] text-slate-500 line-clamp-1">${t.desc || '-'}</div>
-                    </td>
-                    <td class="p-3 font-semibold text-slate-700 whitespace-nowrap">
-                        <i class="fa-solid fa-building-shield mr-1 text-slate-400"></i> ${t.unit || (assignedUser ? assignedUser.unit : '-')}
-                    </td>
-                    <td class="p-3 font-semibold text-slate-800 whitespace-nowrap">
-                        <i class="fa-solid fa-user-check mr-1 text-slate-400"></i> ${assignedUser ? assignedUser.name : t.assignedTo}
-                    </td>
-                    <td class="p-3 text-slate-600 whitespace-nowrap">
-                        ${creatorUser ? creatorUser.name : t.createdBy}
-                    </td>
-                    <td class="p-3 text-right whitespace-nowrap space-x-1">
-                        ${t.status !== 'COMPLETED' ? `
-                            <button onclick="openCompleteModal(${t.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-xs font-semibold shadow transition">
-                                <i class="fa-solid fa-check mr-1"></i> Finalizează
-                            </button>
-                        ` : `
-                            <span class="text-emerald-700 font-bold mr-2"><i class="fa-solid fa-check"></i> Finalizat</span>
-                        `}
-                        <button onclick="exportSingleCalendar(${t.id})" title="Adaugă în Calendar Telefon" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded border border-slate-300 text-xs">
-                            <i class="fa-solid fa-calendar-plus text-blue-600"></i>
-                        </button>
-                        <button onclick="openDetailModal(${t.id})" title="Detalii Lucrare" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded border border-slate-300 text-xs">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                    </td>
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 font-semibold text-slate-700 whitespace-nowrap">
+                            <i class="fa-regular fa-calendar text-slate-400 mr-1.5"></i>${t.dueDate.split('-').reverse().join('.')}
+                        </td>
+                        <td class="p-3">
+                            <div class="font-bold text-slate-900 cursor-pointer hover:text-blue-700" onclick="openDetailModal(${t.id})">${t.title}</div>
+                            <div class="text-[11px] text-slate-500 line-clamp-1">${t.desc}</div>
+                        </td>
+                        <td class="p-3 text-slate-700 font-medium">${t.unit}</td>
+                        <td class="p-3 font-bold text-slate-900">${workerName}</td>
+                        <td class="p-3 text-slate-600">${creatorName}</td>
+                        <td class="p-3 text-right space-x-1 whitespace-nowrap">
+                            ${statusBadge}
+                            ${t.status !== 'COMPLETED' ? `
+                                <button type="button" onclick="openCompleteModal(${t.id})" class="ml-2 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow transition">
+                                    <i class="fa-solid fa-check mr-1"></i>Finalizează
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function setTab(tab) { activeTab = tab; renderTasks(); }
-        function toggleTaskModal(show) { document.getElementById('taskModal').classList.toggle('hidden', !show); }
-        function toggleDetailModal(show) { document.getElementById('detailModal').classList.toggle('hidden', !show); }
-        function toggleCompleteModal(show) { document.getElementById('completeModal').classList.toggle('hidden', !show); }
+        function toggleTaskModal(show) {
+            document.getElementById('taskModal').classList.toggle('hidden', !show);
+        }
+
+        function handleCreateTask(e) {
+            e.preventDefault();
+            const type = document.getElementById('taskType').value;
+            const dueDate = document.getElementById('taskDueDate').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const desc = document.getElementById('taskDesc').value.trim();
+            const unit = document.getElementById('taskUnit').value;
+            const assignedTo = document.getElementById('taskAssignee').value;
+
+            const newTask = {
+                id: Date.now(),
+                type,
+                title,
+                desc,
+                assignedTo,
+                createdBy: currentUser.email,
+                dueDate,
+                status: 'IN_PROGRESS',
+                unit
+            };
+
+            tasks.push(newTask);
+            saveTasks();
+            toggleTaskModal(false);
+            document.getElementById('taskForm').reset();
+            renderTasks();
+
+            if (document.getElementById('taskAddToCalendar').checked) {
+                downloadCalendarEvent(newTask);
+            }
+        }
+
+        function downloadCalendarEvent(task) {
+            const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${task.title}\nDESCRIPTION:${task.desc}\nLOCATION:${task.unit}\nDTSTART:${task.dueDate.replace(/-/g, '')}T090000Z\nDTEND:${task.dueDate.replace(/-/g, '')}T100000Z\nEND:VEVENT\nEND:VCALENDAR`;
+            const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', `termen_${task.id}.ics`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         function openCompleteModal(id) {
             document.getElementById('completeTaskId').value = id;
             document.getElementById('completeNotes').value = '';
-            toggleCompleteModal(true);
+            document.getElementById('completeModal').classList.remove('hidden');
+        }
+
+        function toggleCompleteModal(show) {
+            document.getElementById('completeModal').classList.toggle('hidden', !show);
         }
 
         function handleConfirmComplete(e) {
             e.preventDefault();
-            const id = parseInt(document.getElementById('completeTaskId').value);
-            const notes = document.getElementById('completeNotes').value;
+            const id = Number(document.getElementById('completeTaskId').value);
+            const notes = document.getElementById('completeNotes').value.trim();
 
             const task = tasks.find(t => t.id === id);
             if (task) {
                 task.status = 'COMPLETED';
-                task.completedNotes = notes;
+                task.completionNotes = notes;
                 saveTasks();
                 renderTasks();
             }
@@ -749,92 +822,29 @@
             if (!task) return;
 
             const assignedUser = USERS.find(u => u.email === task.assignedTo);
-            const creatorUser = USERS.find(u => u.email === task.createdBy);
+            const createdUser = USERS.find(u => u.email === task.createdBy);
 
-            document.getElementById('detailTypeBadge').innerText = task.type || 'SARCINĂ';
+            document.getElementById('detailTypeBadge').innerText = task.type;
             document.getElementById('detailTitle').innerText = task.title;
-            document.getElementById('detailCreatedBy').innerText = creatorUser ? creatorUser.name : task.createdBy;
-            document.getElementById('detailAssignedTo').innerText = assignedUser ? `${assignedUser.name} (${assignedUser.unit})` : task.assignedTo;
+            document.getElementById('detailCreatedBy').innerText = createdUser ? createdUser.name : task.createdBy;
+            document.getElementById('detailAssignedTo').innerText = assignedUser ? assignedUser.name : task.assignedTo;
             document.getElementById('detailDueDate').innerText = task.dueDate.split('-').reverse().join('.');
-            document.getElementById('detailDesc').innerText = task.desc || 'Fără instrucțiuni suplimentare.';
-            document.getElementById('detailStatus').innerText = task.status === 'COMPLETED' ? 'Finalizată' : 'În lucru';
+            document.getElementById('detailStatus').innerText = task.status === 'COMPLETED' ? 'Finalizat' : 'În Lucru';
+            document.getElementById('detailDesc').innerText = task.desc;
 
-            if (task.completedNotes) {
-                document.getElementById('detailNotesContainer').classList.remove('hidden');
-                document.getElementById('detailNotes').innerText = task.completedNotes;
+            const notesContainer = document.getElementById('detailNotesContainer');
+            if (task.status === 'COMPLETED' && task.completionNotes) {
+                document.getElementById('detailNotes').innerText = task.completionNotes;
+                notesContainer.classList.remove('hidden');
             } else {
-                document.getElementById('detailNotesContainer').classList.add('hidden');
+                notesContainer.classList.add('hidden');
             }
 
             toggleDetailModal(true);
         }
 
-        function exportSingleCalendar(id) {
-            const task = tasks.find(t => t.id === id);
-            if (!task) return;
-
-            const dateClean = task.dueDate.replace(/-/g, '');
-            const icsContent = 
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//DPCT ANP//RO
-BEGIN:VEVENT
-SUMMARY:[DPCT] ${task.title}
-DESCRIPTION:${task.desc || 'Termen DPCT'}
-DTSTART;VALUE=DATE:${dateClean}
-DTEND;VALUE=DATE:${dateClean}
-STATUS:CONFIRMED
-BEGIN:VALARM
-TRIGGER:-P1D
-ACTION:DISPLAY
-DESCRIPTION:Termen DPCT Mâine!
-END:VALARM
-END:VEVENT
-END:VCALENDAR`;
-
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', `Termen_DPCT_${task.id}.ics`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function handleCreateTask(e) {
-            e.preventDefault();
-            const type = document.getElementById('taskType').value;
-            const title = document.getElementById('taskTitle').value;
-            const desc = document.getElementById('taskDesc').value;
-            const assignedTo = document.getElementById('taskAssignee').value;
-            const dueDate = document.getElementById('taskDueDate').value;
-            const addToCal = document.getElementById('taskAddToCalendar').checked;
-
-            const targetUser = USERS.find(u => u.email === assignedTo);
-
-            const newTask = {
-                id: Date.now(),
-                type,
-                title,
-                desc,
-                assignedTo,
-                createdBy: currentUser.email,
-                dueDate,
-                status: 'IN_PROGRESS',
-                unit: targetUser ? targetUser.unit : 'Penitenciarul Arad'
-            };
-
-            tasks.push(newTask);
-            saveTasks();
-
-            if (addToCal) {
-                exportSingleCalendar(newTask.id);
-            }
-
-            toggleTaskModal(false);
-            document.getElementById('taskForm').reset();
-            document.getElementById('taskAddToCalendar').checked = true;
-            renderTasks();
+        function toggleDetailModal(show) {
+            document.getElementById('detailModal').classList.toggle('hidden', !show);
         }
     </script>
 </body>
