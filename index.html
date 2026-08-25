@@ -12,6 +12,29 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
 
+    <!-- POP-UP INSTANT ALERTE LA LOGIN -->
+    <div id="loginAlertModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-amber-200">
+            <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
+                <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 font-bold text-xl animate-bounce">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900">Alerte Termene Urgente</h3>
+                    <p class="text-xs text-slate-500">Atenție! Aveti lucrări care necesită orezolvare rapidă.</p>
+                </div>
+            </div>
+            
+            <div id="popupAlertsContent" class="space-y-2 max-h-64 overflow-y-auto mb-5 pr-1 text-xs"></div>
+
+            <div class="flex justify-end">
+                <button type="button" onclick="toggleLoginAlertModal(false)" class="bg-blue-900 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-md transition">
+                    Am înțeles, mergi la Tabloul de Bord
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Finalizare Sarcină -->
     <div id="completeModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
@@ -176,7 +199,7 @@
 
         <main class="flex-1 p-3 sm:p-5 max-w-full mx-auto w-full space-y-4">
             
-            <!-- PANOU ALERTE ACTIVE (RESTAURAT) -->
+            <!-- PANOU ALERTE ACTIVE (BANER DE SUS) -->
             <div id="alertsBanner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 shadow-sm">
                 <div class="flex items-center justify-between mb-1.5">
                     <div class="flex items-center space-x-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
@@ -199,11 +222,11 @@
                     </div>
                 </div>
                 <button type="button" onclick="clearUnitView()" class="bg-white/10 hover:bg-white/20 text-white text-xs font-semibold px-3 py-2 rounded-lg border border-white/20 transition flex items-center space-x-1">
-                    <i class="fa-solid fa-arrow-left mr-1"></i> ÎAPOI LA PANOUL DE BORD
+                    <i class="fa-solid fa-arrow-left mr-1"></i> ÎNAPOI LA PANOUL DE BORD
                 </button>
             </div>
 
-            <!-- ANTE PANOUL DE BORD -->
+            <!-- ANTET PANOUL DE BORD -->
             <div id="dashboardHeader" class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <h1 class="text-xl font-bold text-slate-900">Tablou de Bord Termene</h1>
                 <button type="button" id="newTaskBtn" onclick="toggleTaskModal(true)" class="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow flex items-center space-x-1.5 transition">
@@ -344,7 +367,10 @@
             const savedUserEmail = localStorage.getItem('dpct_logged_user');
             if (savedUserEmail) {
                 const user = USERS.find(u => u.email === savedUserEmail);
-                if (user) { currentUser = user; initDashboard(); }
+                if (user) { 
+                    currentUser = user; 
+                    initDashboard(true); // Se transmite true pentru declanșare pop-up la pornire
+                }
             }
         });
 
@@ -357,7 +383,7 @@
             if (!user) { alert('Contul nu există.'); return; }
             currentUser = user;
             localStorage.setItem('dpct_logged_user', user.email);
-            initDashboard();
+            initDashboard(true);
         }
 
         function handleLogout() {
@@ -367,7 +393,7 @@
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        function initDashboard() {
+        function initDashboard(showPopup = false) {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('hidden');
 
@@ -380,7 +406,7 @@
                 document.getElementById('unitSelectorSection').classList.add('hidden');
                 document.getElementById('workerFilterContainer').classList.add('hidden');
                 document.getElementById('creatorFilterContainer').classList.add('hidden');
-                document.getElementById('newTaskBtn').classList.add('hidden'); // Doar Coordonatorii/Admin pot aloca
+                document.getElementById('newTaskBtn').classList.add('hidden'); 
             } else {
                 document.getElementById('unitSelectorSection').classList.remove('hidden');
                 document.getElementById('workerFilterContainer').classList.remove('hidden');
@@ -391,6 +417,57 @@
 
             populateWorkerDropdown();
             renderTasks();
+
+            // Dacă la conectare există alerte, afișăm și pop-up-ul instant
+            if (showPopup) {
+                checkAndTriggerLoginAlerts();
+            }
+        }
+
+        function checkAndTriggerLoginAlerts() {
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            const popupContent = document.getElementById('popupAlertsContent');
+            popupContent.innerHTML = '';
+            let alertCount = 0;
+
+            // Preluăm termenele vizibile pentru utilizatorul curent
+            tasks.forEach(t => {
+                if (t.status === 'COMPLETED') return;
+
+                const assignedUser = USERS.find(u => u.email === t.assignedTo);
+
+                // Izolare pentru lucrători
+                if (currentUser.role === 'LUCRĂTOR') {
+                    const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
+                    const isMyTask = t.assignedTo === currentUser.email;
+                    const isMyUnitTask = userUnits.includes(t.unit) || (assignedUser && userUnits.includes(assignedUser.unit));
+                    if (!isMyTask && !isMyUnitTask) return;
+                }
+
+                const taskDate = new Date(t.dueDate);
+                const diffTime = taskDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (t.dueDate === todayStr) {
+                    alertCount++;
+                    popupContent.innerHTML += `<div class="p-2 bg-amber-50 rounded-lg border border-amber-300 font-semibold text-amber-900"><i class="fa-solid fa-clock text-amber-600 mr-1.5"></i> <strong>TERMEN AZI:</strong> "${t.title}" (${t.unit})</div>`;
+                } else if (t.dueDate > todayStr && diffDays <= 3) {
+                    alertCount++;
+                    popupContent.innerHTML += `<div class="p-2 bg-blue-50 rounded-lg border border-blue-200 text-blue-900"><i class="fa-solid fa-calendar-day text-blue-600 mr-1.5"></i> <strong>În ${diffDays} zile:</strong> "${t.title}" (${t.unit}) - scadență pe ${t.dueDate.split('-').reverse().join('.')}</div>`;
+                } else if (t.dueDate < todayStr) {
+                    alertCount++;
+                    popupContent.innerHTML += `<div class="p-2 bg-red-50 rounded-lg border border-red-300 font-bold text-red-900"><i class="fa-solid fa-triangle-exclamation text-red-600 mr-1.5"></i> <strong>DEPĂȘIT:</strong> "${t.title}" (${t.unit}) - trebuia finalizat pe ${t.dueDate.split('-').reverse().join('.')}</div>`;
+                }
+            });
+
+            if (alertCount > 0) {
+                toggleLoginAlertModal(true);
+            }
+        }
+
+        function toggleLoginAlertModal(show) {
+            document.getElementById('loginAlertModal').classList.toggle('hidden', !show);
         }
 
         function renderUnitButtons() {
@@ -424,7 +501,6 @@
 
         function clearUnitView() {
             activeUnitView = '';
-            document.getElementById('unitViewBanner').classList.hidden = true;
             document.getElementById('unitViewBanner').classList.add('hidden');
             document.getElementById('dashboardHeader').classList.remove('hidden');
             renderUnitButtons();
@@ -526,7 +602,7 @@
 
             let countToday = 0, countSoon = 0, countOverdue = 0, countCompleted = 0;
             
-            // Calcul KPIs & Generare Alerte Active
+            // Calcul KPIs & Generare Alerte Active în Banner
             const alertsContainer = document.getElementById('alertsContainer');
             alertsContainer.innerHTML = '';
             let activeAlertsCount = 0;
@@ -577,7 +653,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există termene de afișat conform filtrării curent.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400">Nu există termene de afișat conform filtrării curente.</td></tr>`;
                 return;
             }
 
