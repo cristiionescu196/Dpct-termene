@@ -12,6 +12,38 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800">
 
+    <!-- MENIU LATERAL / DRAWER (3 LINII) -->
+    <div id="sideMenuOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 transition-opacity" onclick="toggleSideMenu(false)"></div>
+    <div id="sideMenu" class="fixed top-0 left-0 bottom-0 w-72 bg-slate-900 text-white z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center border border-amber-500/30 overflow-hidden p-1">
+                    <img src="https://anp.gov.ro/wp-content/uploads/2021/03/sigla-anp-300x300.png" alt="Stema ANP" class="w-full h-full object-contain">
+                </div>
+                <span class="font-bold text-sm tracking-wide">Meniu DPCT</span>
+            </div>
+            <button type="button" onclick="toggleSideMenu(false)" class="text-slate-400 hover:text-white p-1 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <nav class="p-4 space-y-2 flex-1">
+            <button type="button" onclick="switchMainView('dashboard')" id="navBtnDashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition bg-blue-900 text-white shadow">
+                <i class="fa-solid fa-chart-line text-base"></i>
+                <span>Tablou de Bord</span>
+            </button>
+            <button type="button" onclick="switchMainView('history')" id="navBtnHistory" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i class="fa-solid fa-box-archive text-base"></i>
+                <span>Istoric / Arhivă Termene</span>
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800 text-[11px] text-slate-400">
+            <p id="menuUserRoleDisplay" class="font-semibold text-slate-300"></p>
+            <p class="mt-0.5">Sistem DPCT v2.4</p>
+        </div>
+    </div>
+
     <!-- POP-UP INSTANT ALERTE LA LOGIN -->
     <div id="loginAlertModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-amber-200">
@@ -194,9 +226,14 @@
     <!-- ECRAN PRINCIPAL (DASHBOARD) -->
     <div id="appScreen" class="hidden min-h-screen flex flex-col">
         
-        <!-- HEADER FIXAT SI CURAT -->
+        <!-- HEADER FIXAT CU BUTON DE MENIU (3 LINII) -->
         <header class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow-md border-b border-slate-800">
             <div class="flex items-center space-x-3">
+                <!-- BUTON MENIU 3 LINII -->
+                <button type="button" onclick="toggleSideMenu(true)" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg text-lg transition" title="Meniu Navigare">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
                 <div class="w-9 h-9 bg-slate-800 rounded-xl flex items-center justify-center border border-amber-500/30 overflow-hidden p-1">
                     <img src="https://anp.gov.ro/wp-content/uploads/2021/03/sigla-anp-300x300.png" alt="Stema ANP" class="w-full h-full object-contain">
                 </div>
@@ -208,11 +245,12 @@
 
             <button type="button" onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center space-x-1">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Deconectare</span>
+                <span class="hidden sm:inline">Deconectare</span>
             </button>
         </header>
 
-        <main class="flex-1 p-3 sm:p-5 max-w-full mx-auto w-full space-y-4">
+        <!-- SECTIUNEA 1: PANOUL DE BORD PRINCIPAL -->
+        <main id="mainDashboardView" class="flex-1 p-3 sm:p-5 max-w-full mx-auto w-full space-y-4">
             
             <!-- PANOU ALERTE ACTIVE (BANER DE SUS) -->
             <div id="alertsBanner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 shadow-sm">
@@ -241,7 +279,7 @@
                 </button>
             </div>
 
-            <!-- SECTIUNE SELECTOR UNITATI (VIZIBIL DOAR COORDONATORILOR SI ADMIN) -->
+            <!-- SECTIUNE SELECTOR UNITATI -->
             <div id="unitSelectorSection" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center">
                     <i class="fa-solid fa-building-shield text-blue-700 mr-1.5"></i> Vizualizare pe Unitate Penitenciară:
@@ -288,7 +326,7 @@
                 </button>
             </div>
 
-            <!-- TABEL RESTAURAT CU ACȚIUNI COMPLETE -->
+            <!-- TABEL RESTAURAT CU ACȚIUNI COMPLETE + BUTON DE ȘTERGERE PENTRU COORDONATORI -->
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="w-full overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
@@ -299,7 +337,7 @@
                                 <th class="p-3 w-36">Unitate</th>
                                 <th class="p-3 w-32">Lucrător</th>
                                 <th class="p-3 w-32">Trasat De</th>
-                                <th class="p-3 w-44 text-right">Acțiuni / Status</th>
+                                <th class="p-3 w-48 text-right">Acțiuni / Status</th>
                             </tr>
                         </thead>
                         <tbody id="taskTableBody" class="divide-y divide-slate-100"></tbody>
@@ -332,6 +370,41 @@
             </div>
 
         </main>
+
+        <!-- SECTIUNEA 2: ECRAN ISTORIC / ARHIVĂ TERMENE ȘTERSE -->
+        <main id="mainHistoryView" class="hidden flex-1 p-3 sm:p-5 max-w-full mx-auto w-full space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-box-archive text-slate-600 mr-2"></i>
+                        Istoric & Arhivă Termene Șterse
+                    </h1>
+                    <p class="text-xs text-slate-500">Toate lucrările șterse de coordonatori sunt păstrate aici pentru transparență.</p>
+                </div>
+                <button type="button" onclick="switchMainView('dashboard')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Înapoi la Tablou
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider border-b">
+                                <th class="p-3 w-32">Data Ștergerii</th>
+                                <th class="p-3">Lucrare / Descriere</th>
+                                <th class="p-3 w-36">Unitate</th>
+                                <th class="p-3 w-32">Șters De</th>
+                                <th class="p-3 w-32">Responsabil Inițial</th>
+                                <th class="p-3 w-28 text-right">Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
     </div>
 
     <script>
@@ -369,7 +442,7 @@
         let activeUnitView = '';
         let selectedWorkerFilter = '';
 
-        // DATE DEMONSTRATIVE CONEXATE
+        // DATE DEMONSTRATIVE CONEXATE (include campuri pt istoric stergere)
         let tasks = JSON.parse(localStorage.getItem('dpct_tasks')) || [
             { id: 1, type: 'Petiție', title: 'Verificare sesizare condiții', desc: 'Analiză dosar petiție.', assignedTo: 'delia.nicolae@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-20', status: 'IN_PROGRESS', unit: 'Penitenciarul Mărgineni' },
             { id: 2, type: 'Adresă', title: 'Adresă completare documente', desc: 'Solicitare clarificări.', assignedTo: 'darius@dpct.ro', createdBy: 'cristi@dpct.ro', dueDate: '2026-08-26', status: 'IN_PROGRESS', unit: 'Penitenciarul Arad' },
@@ -408,11 +481,46 @@
             document.getElementById('loginScreen').classList.remove('hidden');
         }
 
+        function toggleSideMenu(show) {
+            const overlay = document.getElementById('sideMenuOverlay');
+            const menu = document.getElementById('sideMenu');
+            if (show) {
+                overlay.classList.remove('hidden');
+                menu.classList.remove('-translate-x-full');
+            } else {
+                overlay.classList.add('hidden');
+                menu.classList.add('-translate-x-full');
+            }
+        }
+
+        function switchMainView(view) {
+            toggleSideMenu(false);
+            const dashboardView = document.getElementById('mainDashboardView');
+            const historyView = document.getElementById('mainHistoryView');
+            const btnDash = document.getElementById('navBtnDashboard');
+            const btnHist = document.getElementById('navBtnHistory');
+
+            if (view === 'dashboard') {
+                dashboardView.classList.remove('hidden');
+                historyView.classList.add('hidden');
+                btnDash.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition bg-blue-900 text-white shadow";
+                btnHist.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white";
+                renderTasks();
+            } else {
+                dashboardView.classList.add('hidden');
+                historyView.classList.remove('hidden');
+                btnHist.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition bg-blue-900 text-white shadow";
+                btnDash.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition text-slate-300 hover:bg-slate-800 hover:text-white";
+                renderHistoryTable();
+            }
+        }
+
         function initDashboard(showPopup = false) {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appScreen').classList.remove('hidden');
 
             document.getElementById('userDisplay').innerText = `${currentUser.name} — ${currentUser.office} (${currentUser.role})`;
+            document.getElementById('menuUserRoleDisplay').innerText = `Autentificat: ${currentUser.name} [${currentUser.role}]`;
 
             const isWorker = currentUser.role === 'LUCRĂTOR';
             
@@ -446,7 +554,7 @@
             let alertCount = 0;
 
             tasks.forEach(t => {
-                if (t.status === 'COMPLETED') return;
+                if (t.status === 'COMPLETED' || t.status === 'DELETED') return;
 
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
                 const workerName = assignedUser ? assignedUser.name : t.assignedTo;
@@ -466,7 +574,7 @@
                 if (t.dueDate === todayStr) {
                     alertCount++;
                     popupContent.innerHTML += `<div class="p-2.5 bg-amber-50 rounded-lg border border-amber-300 font-semibold text-amber-900"><i class="fa-solid fa-clock text-amber-600 mr-1.5"></i> <strong>TERMEN AZI:</strong> "${t.title}" (${t.unit}) — <strong>Responsabil:</strong> ${workerName}</div>`;
-                } else if (t.dueDate > todayStr && diffDays < 5) { // Regula SUB 5 ZILE
+                } else if (t.dueDate > todayStr && diffDays < 5) {
                     alertCount++;
                     popupContent.innerHTML += `<div class="p-2.5 bg-blue-50 rounded-lg border border-blue-200 text-blue-900"><i class="fa-solid fa-calendar-day text-blue-600 mr-1.5"></i> <strong>În ${diffDays} zile:</strong> "${t.title}" (${t.unit}) — <strong>Responsabil:</strong> ${workerName} (scadență: ${t.dueDate.split('-').reverse().join('.')})</div>`;
                 } else if (t.dueDate < todayStr) {
@@ -574,6 +682,32 @@
             renderTasks();
         }
 
+        // FUNCȚIE ȘTERGERE TERMEN (TRIMITE ÎN ISTORIC)
+        function handleDeleteTask(id) {
+            if (confirm('Sigur doriți să ștergeți acest termen? El va fi mutat în Istoric/Arhivă.')) {
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    task.status = 'DELETED';
+                    task.deletedBy = currentUser.email;
+                    task.deletedAt = new Date().toLocaleString('ro-RO');
+                    saveTasks();
+                    renderTasks();
+                }
+            }
+        }
+
+        // FUNCȚIE RESTAURARE TERMEN DIN ISTORIC
+        function handleRestoreTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.status = 'IN_PROGRESS';
+                delete task.deletedBy;
+                delete task.deletedAt;
+                saveTasks();
+                renderHistoryTable();
+            }
+        }
+
         function renderTasks() {
             const tbody = document.getElementById('taskTableBody');
             tbody.innerHTML = '';
@@ -584,8 +718,10 @@
 
             let kpiAll = 0, kpiOverdue = 0, kpiToday = 0, kpiSoon = 0, kpiCompleted = 0;
 
-            // Calculare KPI-uri
+            // Calculare KPI-uri (excludem cele sterse)
             tasks.forEach(t => {
+                if (t.status === 'DELETED') return;
+
                 if (currentUser.role === 'LUCRĂTOR') {
                     const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
                     const assignedUser = USERS.find(u => u.email === t.assignedTo);
@@ -605,7 +741,7 @@
 
                     if (t.dueDate < todayStr) kpiOverdue++;
                     if (t.dueDate === todayStr) kpiToday++;
-                    if (t.dueDate > todayStr && diffDays < 5) kpiSoon++; // Sub 5 zile
+                    if (t.dueDate > todayStr && diffDays < 5) kpiSoon++;
                 }
             });
 
@@ -617,6 +753,7 @@
 
             // Filtrare rânduri afișate
             const filteredTasks = tasks.filter(t => {
+                if (t.status === 'DELETED') return false; // Nu se afiseaza pe panoul principal
                 if (activeUnitView && t.unit !== activeUnitView) return false;
 
                 if (currentUser.role === 'LUCRĂTOR') {
@@ -653,7 +790,7 @@
             let alertCount = 0;
 
             tasks.forEach(t => {
-                if (t.status === 'COMPLETED') return;
+                if (t.status === 'COMPLETED' || t.status === 'DELETED') return;
 
                 if (currentUser.role === 'LUCRĂTOR') {
                     const userUnits = [currentUser.unit, ...(currentUser.multiUnits || [])];
@@ -702,6 +839,8 @@
                 return;
             }
 
+            const canDelete = currentUser.role === 'COORDONATOR' || currentUser.role === 'ADMIN';
+
             filteredTasks.sort((a,b) => a.dueDate.localeCompare(b.dueDate)).forEach(t => {
                 const assignedUser = USERS.find(u => u.email === t.assignedTo);
                 const createdUser = USERS.find(u => u.email === t.createdBy);
@@ -735,10 +874,54 @@
                         <td class="p-3 text-right space-x-1 whitespace-nowrap">
                             ${statusBadge}
                             ${t.status !== 'COMPLETED' ? `
-                                <button type="button" onclick="openCompleteModal(${t.id})" class="ml-2 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow transition">
+                                <button type="button" onclick="openCompleteModal(${t.id})" class="ml-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] shadow transition">
                                     <i class="fa-solid fa-check mr-1"></i>Finalizează
                                 </button>
                             ` : ''}
+                            ${canDelete ? `
+                                <button type="button" onclick="handleDeleteTask(${t.id})" class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition" title="Șterge termen (Muta în istoric)">
+                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // RANDAEE TABEL ISTORIC
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            const deletedTasks = tasks.filter(t => t.status === 'DELETED');
+
+            if (deletedTasks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400 italic">Nu există termene șterse în istoric.</td></tr>`;
+                return;
+            }
+
+            deletedTasks.forEach(t => {
+                const assignedUser = USERS.find(u => u.email === t.assignedTo);
+                const deletedByUser = USERS.find(u => u.email === t.deletedBy);
+
+                const workerName = assignedUser ? assignedUser.name : t.assignedTo;
+                const deletedByName = deletedByUser ? deletedByUser.name : (t.deletedBy || 'Nespecificat');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+                        <td class="p-3 text-slate-500 font-medium whitespace-nowrap">${t.deletedAt || 'Anterior'}</td>
+                        <td class="p-3">
+                            <div class="font-bold text-slate-800 line-through">${t.title}</div>
+                            <div class="text-[11px] text-slate-400 line-clamp-1">${t.desc}</div>
+                        </td>
+                        <td class="p-3 text-slate-600 font-medium">${t.unit}</td>
+                        <td class="p-3 font-bold text-red-700">${deletedByName}</td>
+                        <td class="p-3 text-slate-700">${workerName}</td>
+                        <td class="p-3 text-right">
+                            <button type="button" onclick="handleRestoreTask(${t.id})" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-[11px] transition shadow">
+                                <i class="fa-solid fa-rotate-left mr-1"></i>Restaurare
+                            </button>
                         </td>
                     </tr>
                 `;
